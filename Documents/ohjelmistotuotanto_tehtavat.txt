@@ -1,0 +1,41 @@
+1. Mistä eri osa-alueista koostuu ohjelmistojen kehittäminen?
+
+Ohjelmistojen kehittäminen koostuu esitutkimuksesta, määrittelystä, suunnittelusta, toteutuksesta, integroinnista ja testauksesta sekä käyttöönotosta ja ylläpidosta.
+
+2. Mihin kysymyksiin nämä eri osa-alueet hakevat vastauksia?
+
+Esitutkimuksessa määritellään ratkaistava ongelma sekä pohditaan sen toteutuskelpoisuutta ja (taloudellista) kannattavuutta. Määrittelyvaiheessa määritellään tarkemmin, mitä ongelman ratkaiseminen vaatii ja pohditaan millainen järjestelmä täyttäisi ongelman vaatimukset. Suunnitteluvaiheessa edelleen suunnitellaan määrittelyvaiheessa määritellyn järjestelmän toteutusta ja "ositetaan" eli jaetaan järjestelmä pienempiin kokonaisuuksiin. Toteutusvaiheessa sitten lähdetään toteuttamaan näitä pienempiä osia/kokonaisuuksia. Integrointi- ja testausvaiheessa pyritään liittämään toteutetut osat toisiinsa kokonaisuuden muodostamiseksi. Kun kokonaisuus on valmis, seuraa käyttöönotto- ja ylläpitovaiheet, joista jälkimmäinen jatkuu niin kauan, kuin järjestelmää on tarpeen ylläpitää.
+
+3. Mitä tarkoittaa termi Software Engineering opiskelumateriaalin mukaan?
+
+Termi "software engineering" suomennetaan usein joko ohjelmistotuotannoksi tai -tekniikaksi. Sillä tarkoitetaan ohjelmistotyötä, jonka tavoitteena on tuottaa käyttäjien kohtuulliset toiveet ja odotukset täyttävä järjestelmä sovittujen aikataulujen ja kustannusarvioiden puitteissa. Software-käsite viittaa siihen, mitä syntyy, eli se käsittää komponentit, dokumentit, tietokannat, koodin jne. Engineering-käsite taas viittaa siihen, mitä toimintoja ko. työ pitää sisällään. Tällaisia ovat esimerkiksi projektin elinkaareen liittyvät toiminnot, kuten esitutkimus, määrittely, suunnittelu, toteutus, testaus, käyttöönotto ja ylläpito, sekä projektinhallinta, laatujärjestelmät, laadunvarmistus ja tuotteenhallinta.
+
+4. Mikä on vaihejakomallin tarkoitus?
+
+Vaihejakomallissa eli prosessimallissa ohjelmiston kehitystyö tai koko elinkaari jaetaan vaiheisiin, kuten esitutkimus, määrittely, suunnittelu, toteutus, testaus, käyttöönotto ja ylläpito. Vaihejakomallissa jokaiselle vaiheelle on olemassa omat vaihetuotteensa, eli esimerkiksi dokumentit, koodi, valmis ohjelmapaketti, testaustulokset, käyttöohje, ylläpitosuunnitelma jne.. Vaihejakomalli ei sisällä konkreettisia tai yksityiskohtaisia toimintasääntöjä, vaan on yleisperiaatteen kuvaus, joka on muokattavissa eri yrityksille, sovellusalueille ja projekteille sopivaksi.
+
+5. Mitkä ovat vesiputosmallin vaiheet?
+
+Vesiputousmalli on lineaarinen vaihejakomalli. Se on vanhin käytetty malli, ja käytännössä kaikista eri malleista löytyy sen mukaiset kehitysvaiheet. Vesiputousmallissa lineaarisuudella tarkoitetaan sitä, että seuraavaan vaiheeseen voidaan siirtyä vasta edellisen vaiheen tulosten valmistuttua. Vesiputousmallin mukaiset vaiheet on selitetty kohdissa 1 ja 2.
+
+6. Mitä tarkoittaa EVO-malliin kuuluvat käsitteet iteratiivinen ja inkrementaalinen?
+
+Iteratiivisuudella tarkoitetaan toimintatapaa, jossa ensimmäisessä projektissa rakennetaan ydinjärjestelmä, jota edelleen kehitetään seuraavissa projekteissa. Toimintatapaa käytetään, kun ei heti alussa tarkalleen tiedetä, mitä halutaan. Iteratiivisessa prosessissa toistetaan vaihejakomallin mukaisia kehitysvaiheita. Inkrementaalisuus taas on idea, jonka mukaan jokaisen "kierroksen" eli iteraation on tarkoitus lisätä ohjelmistoon toiminnallisuutta. Tämä johtaa vaatimusten tarkentumiseen joka kierroksella, joka pienentää virheiden riskiä.
+
+7. Mitä tarkoittaa ohjelmistoprojekti?
+
+Ohjelmistoprojekti on menettely, jonka pyrkimyksenä on toteuttaa asiakkaalle toimitettava tuote tai palvelu. Projektilla on määrätyt resurssit (esim. aikataulu, budjetti ja henkilöt) ja oma organisaatio (johon sisältyy esim. ohjausryhmä, projektipäällikkö, suunnittelijat, ohjelmoijat, testaajat, laatuvastaava(t)). Projektin tilaaja voi olla ulkoinen tai sisäinen. Projekti ositetaan osatehtäviin, kuten esitutkimus, määrittely, projektisuunnittelu, ohjelmistosuunnittelu, toteutus, testaus, lopetus... Projektin läpiviennissä noudatetaan tiettyä prosessia, jonka lähtökohdat ja tavoiteltava tulos on selkeästi määritelty. Projektin vaihejako riippuu aina projektin luonteesta; se määritellään eri projekteille eri tavoin. 
+
+8. Mitä tarkoitetaan ohjelmiston laadulla ja mitä tarkoittaa laatujärjestelmä?
+
+Laadulla tarkoitetaan erilaisten tuotteiden tai niiden toimintojen mitattavia ominaisuuksia, eli sitä, kuinka hyvin ne täyttävät käyttäjänsä kohtuulliset toiveet ja odotukset. Laadun mittaamiseksi tarvitaan erilaisia mittareita (esim. testaajalta kysyminen yms.). Yrityksen toimintatapaa, jolla tuote tehdään, kutsutaan laatujärjestelmäksi. Laatujärjestelmällä pyritään takaamaan, että tuotteiden laatutaso pysyy suunniteltuna aikataulun ja budjetin puitteissa.
+
+9. Mitä tarkoittavat termit verifiointi ja validointi?
+
+Ohjelmistokehitysprosessin jokaisen vaiheen päätteeksi todennetaan eli verifioidaan vaatimusten toteutuminen vertaamalla vaiheen syötedokumentteja (vaatimukset) sen tulosdokumentteihin ja siten varmistetaan, että (vaihe)tuote vastaa spesifikaatiota. Validointi eli kelpoistaminen taas tarkoittaa toimenpiteitä, joilla pyritään osoittamaan, että toteutettava järjestelmä vastaa asiakkaan tarpeita, sekä tutkitaan tuotteen sopivuutta käyttötarkoitukseensa.
+
+10. Mitä tarkoittavat laadunvarmistukseen liittyvät käsitteet tarkastus ja katselmointi?
+
+Projektissa tarkastusten aikana poistetaan mahdolliset viat, jotta seuraava vaihe voidaan aloittaa mahdollisimman hyvältä pohjalta. Tarkastukset ovat hyvä tapa vähentää lopputuotteen vikoja. Itse tarkastustilanteessa vaihetuote käydään läpi ja kirjataan löytyneet viat.
+
+Projektin seuranta tapahtuu järjestämällä katselmointeja tyypillisesti eri vaiheiden päätteeksi. Katselmoinnin aikana vaiheen tuotokset käydään läpi ja todennetaan tehdyiksi, jonka jälkeen siirrytään seuraavaan vaiheeseen. Usein katselmoinneissa on myös mukana asiakkaan edustaja. Tarkastusten ja katselmointien tarkoitus on havainnollistaa projektin etenemistä ja toimia välitavoitteena.

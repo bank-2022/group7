@@ -1,0 +1,92 @@
+1. Mitä asioita esitetään projektisuunnitelman ylätunnisteessa?
+
+Ylätunnisteessa esitetään dokumentista vastaavan yrityksen nimi, dokumentin "tyyppi", sivunumero sekä sivujen kokonaismäärä, dokumentin laatijan/laatijoiden nimet, dokumentin tiedostonimi, dokumentin versionumero, dokumentin hyväksyjän nimi, sekä dokumentin luomis-, tallennus- ja tulostusajankohdat.
+
+2. Mitä asioita esitetään projektisuunnitelman kannessa dokumentin versiohistoriasta?
+
+Versiohistoriassa esitetään kunkin dokumenttiversion versionumero, valmistumispäivämäärä, muutosperusteet, tekijä ja hyväksyjä.
+
+3. Mikä on projektisuunnittelun pääasiallinen tarkoitus luvun 1.1 mukaan?
+
+Projektisuunnittelun pääasiallinen tarkoitus on organisoida projektin toiminta kokonaisuudessaan. Tähän sisältyy koko projektin ja siihen osallistuvien henkilöiden toiminnan sunnittelu, organisointi, valvonta ja johtaminen. Suunnittelu alkaa projektin sisällön ja sitä sitovien päivämäärien ja rajoitteiden määrittelyllä. Suunnitteluprosessin vaiheisiin sisältyy rakennettavan sovelluksen koon ja toteutukseen tarvittavien resurssien arviointi, projektin aikataulu, riskien huomioonottaminen ja hallinta sekä projektinhallinta. Suunnittelun tuloksena syntyy projektisuunnitelma, joka kertoo, kuinka tavoitteet saavutetaan käytettävissä olevilla resursseilla.
+
+4. Mitä on otettava huomioon, kun esitetään määritelmiä projektisuunnitelman luvussa 1.2?
+
+Määritelmät on syytä esittää kattavasti, sillä on syytä ottaa huomioon, että määritelmät eivät ole välttämättä lukijalle tuttuja, että määritelmien voidaan ajatella tuottavan sekaannuksia, ja että määritelmät eivät välttämättä ole yleisesti käytössä tai tiedossa.
+
+5. Mikä tarkoitus on projektisuunnitelman luvulla 2.1?
+
+Luvun tarkoitus on kuvata projektin taustat, eli esimerkiksi esitellä projektin osapuolet ja osapuolten mahdollinen projektiyhteistyön historia sekä osapuolten yleiset tavoitteet projektille.
+
+6. Miten projekti on rajattu?
+
+Projektissa toteutetaan ohjelmasta demoversio, joka on ominaisuuksiltaan rajattu toimimaan vain laboraatioympäristössä.
+
+7. Miten projektissa prosessin laadusta pyritään huolehtimaan luvun 2.5 mukaisesti?
+
+Noudatetaan projektissa sovittuja projekti- ja dokumentointikäytäntöjä sekä olemassa olevia dokumenttipohjia. Kokonaistyömäärässä sallitaan korkeintaan 5 %:n ylitys. Projektin luovutuksessa sallitaan korkeintaan 5 arkipäivän ylitys.
+
+8. Miten projektin lopputuloksen laatuun projektiryhmä voi erityisesti vaikuttaa luvun 2.5 mukaisesti?
+
+Jokaisen vaiheen jälkeen suoritetaan katselmointi, jossa tarkastellaan vaiheen tuloksia ja projektin tilaa. Katselmoinnissa huomatut virheet korjataan mahdollisimman pian. Dokumentoinnissa sekä koodauksessa pyritään selkeyteen sekä luettavuuteen. Projektiryhmä toimii ryhmänä ongelmien ratkaisuissa.
+
+9. Luvussa 4.1 kuvataan projektin vaiheistus ja aikataulu. Miksi esitutkimus ei aina kuulu
+varsinaiseen toteutusprojektiin?
+
+Esitutkimus ei kuulu projektin vaiheisiin, koska varsinainen tuotteen toteutusprojekti käynnistyy vasta esitutkimusvaiheen ja projektisopimuksen laatimisen jälkeen.
+
+10. Mikä on projektin ensisijainen luovutuspäivämäärä luvun 4.1 mukaan?
+
+Projektin ensisijainen tavoite on luovuttaa projekti periodin toiseksi viimeisen viikon perjantaina. Projektin laatutavoitteiden mukaisesti projekti voidaan luovuttaa vielä periodin viimeisenä päivänä, jotta projektille asetetuissa prosessin laatutavoitteissa pysytään.
+
+11. Miten projektissa hoidetaan yksikkö- ja integrointitestaukset luvun 4.1.4 mukaan?
+
+Projektissa ei ole varsinaisesti erikseen omaa testausvaihetta, vaan toteutus- ja testausvaiheen aikana suoritetaan jatkuvasti yksikkötestausta Integrointitestauksessa ohjelman komponentit asennetaan jollekin luokkatilassa olevalle koneelle, johon on kiinnitetty RFID-lukija ja kosketusnäyttö. Tietokoneen täytyy olla myös yhteydessä palvelintietokoneeseen ja siellä olevaan tietokantapalvelimeen, jotta tietokantatapahtuvat voidaan suorittaa ja testata.
+
+12. Mikä on projektin korkein päättävä elin luvun 5.1 mukaan?
+
+Projektin korkein päättävä elin on projektin ohjausryhmä.
+
+13. Mitä vastuita ja valtuuksia on toimittajan projektiryhmän vetäjällä?
+
+Vetäjän vastuulla kuuluu huolehtia, että sovitut tehtävät tehdään projektin aikataulun mukaisesti sekä huolehtia tiedottamisesta ja projektin Teams-sivujen päivittämisestä. Vetäjällä on myös valtuudet suorittaa tehtävien uudelleenjako, jos tilanne niin vaatii. Uudelleenjaosta tulee informoida projektin ohjaajaa.
+
+14. Miten usein pidetään toimittajan projektiryhmän palaverit?
+
+Toimittajan projektiryhmän palaverit pidetään kerran viikossa.
+
+15. Kuka toimii puheenjohtajana ja sihteerinä projektiryhmän palavereissa?
+
+Puheenjohtajana ja sihteerinä toimii toimittajan projektiryhmän vetäjä.
+
+16. Mitä tarkoittaa projektin ulkoinen raportointi?
+
+Tällä tarkoitetaan projektiryhmän ja sen kanssa kommunikoivien ulkoisten ryhmien välistä raportointia.
+
+17. Mitä tarkoittaa projektin sisäinen raportointi?
+
+Tämä käsittää raportoinnin projektiryhmän sisällä eli projektin tekijöiden keskinäistä raportointia.
+
+18. Kuka vastaa projektin ulkoisesta ja sisäisestä tiedottamisesta?
+
+Ulkoisesta tiedottamisesta sekä sisäisestä raportoinnista vastaa projektipäällikkö/projektiryhmän vetäjä.
+
+19. Mitä tarkoittaa ohjelmistoprojektissa käsite riski?
+
+Riski on jokin tekijä, joka voi muodostua ongelmaksi projektin aikana. Riski voi liittyä esimerkiksi aikatauluttamiseen, tehtävien ja vastuujaon epäselvyyteen. Jos nämä asiat eivät ole kunnossa niin niistä äkkiä muodostuu ongelmia.
+
+20. Miten projektissa hoidetaan muutostenhallinta?
+
+Jos halutaan muutoksia dokumenttiin, mikä on jo katselmoitu ja hyväksytty sekä jäädytetty, täytyy muutospyyntö laatia kirjallisesti.
+
+21. Mitä tarkoittaa dokumentin jäädyttäminen?
+
+Dokumentin jäädyttäminen tarkoittaa sitä, ettei siihen saa tehdä muutoksia muuten kuin hyväksyttyä muutoksenhallintamenettelyä käyttäen.
+
+22. Mitä asioita kuuluu projektin päätöstoimiin luvun 6.1 mukaisesti?
+
+Projekti "päätetään" hyväksymistestauksen jälkeen ohjausryhmän päätöksellä. Kun projekti valmistuu tai projektiin varattu aika loppuu, tulokset esitellään ohjaavalle opettajalle. Tavoite on luovuttaa projekti periodin seitsemännen viikon perjantaihin mennessä. Hyväksymistestauksessa käydään läpi kaikki ryhmän toteuttamat toiminnalliset vaatimukset ja todetaan niiden toimivuus järjestelmässä.
+
+23. Milloin dokumentti saa ensimmäisen hyväksytyn version 1.0?
+
+Dokumentin ensimmäinen versio on aina 0.10. Kun projektia päivitetään niin sen versiokin päivittyy samalla. Dokumentista tehdään versio 1.0 vasta sitten kun ohjausryhmä hyväksyy dokumentin valmiiksi.
