@@ -1,3 +1,3 @@
 # group7
 ## ER-kaavio
-<img src="documents/er_kaavio.png">
+<img src="Documents/er_kaavio.png">
