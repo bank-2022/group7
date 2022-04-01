@@ -9,7 +9,7 @@ const tilitapahtuma = {
   },
   add(tilitapahtuma, callback) {
     return db.query(
-      "insert into tilitapahtuma (IdTilinumero, dateTime, summa, tilitapahtuma, idKortti) values(?,?,?,?,?)",
+      "insert into tilitapahtuma (idTilinumero, dateTime, summa, tilitapahtuma, idKortti) values(?,?,?,?,?)",
       [tilitapahtuma.idTilinumero,tilitapahtuma.dateTime, tilitapahtuma.summa, tilitapahtuma.tilitapahtuma, tilitapahtuma.idKortti],
       callback
     );
@@ -19,7 +19,7 @@ const tilitapahtuma = {
   },
   update(id, tilitapahtuma, callback) {
     return db.query(
-      "update tilitapahtuma set IdTilinumero=?, dateTime=?, summa=?, tilitapahtuma=?, idKortti=?, where idTilitapahtuma=?",
+      "update tilitapahtuma set idTilinumero=?, dateTime=?, summa=?, tilitapahtuma=?, idKortti=?, where idTilitapahtuma=?",
       [tilitapahtuma.idTilinumero,tilitapahtuma.dateTime, tilitapahtuma.summa, tilitapahtuma.tilitapahtuma, tilitapahtuma.idKortti, id],
       callback
     );
