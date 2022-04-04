@@ -7,8 +7,7 @@ var helmet = require("helmet");
 var cors = require("cors");
 
 var asiakasRouter = require("./routes/asiakas");
-
-//var usersRouter = require("./routes/users");
+var proseduuriRouter = require("./routes/proseduuri");
 
 var app = express();
 
@@ -22,7 +21,6 @@ app.use(helmet());
 app.use(cors());
 
 //app.use("/users", usersRouter);
-app.use("/asiakas", asiakasRouter);
-
+app.use("/proseduuri", proseduuriRouter);
 
 module.exports = app;
