@@ -27,7 +27,6 @@ app.use("/users", usersRouter);
 app.use("/asiakas", asiakasRouter);
 app.use("/kortti", korttiRouter);
 app.use("/proseduuri", proseduuriRouter);
-app.use("/proseduuri", proseduuriRouter);
 app.use("/tilitapahtuma", tilitapahtumaRouter);
 
 module.exports = app;
