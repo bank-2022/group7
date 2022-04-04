@@ -6,9 +6,9 @@ var logger = require("morgan");
 var helmet = require("helmet");
 var cors = require("cors");
 
+var usersRouter = require('./routes/users');
 var asiakasRouter = require("./routes/asiakas");
-
-//var usersRouter = require("./routes/users");
+var korttiRouter = require('./routes/kortti');
 
 var app = express();
 
@@ -21,8 +21,9 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(helmet());
 app.use(cors());
 
-//app.use("/users", usersRouter);
+app.use('/users', usersRouter);
 app.use("/asiakas", asiakasRouter);
+app.use('/kortti', korttiRouter);
 
 
 module.exports = app;
