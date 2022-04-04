@@ -9,6 +9,7 @@ var cors = require("cors");
 var usersRouter = require('./routes/users');
 var asiakasRouter = require("./routes/asiakas");
 var korttiRouter = require('./routes/kortti');
+var proseduuriRouter = require("./routes/proseduuri");
 
 var app = express();
 
@@ -24,6 +25,6 @@ app.use(cors());
 app.use('/users', usersRouter);
 app.use("/asiakas", asiakasRouter);
 app.use('/kortti', korttiRouter);
-
+app.use("/proseduuri", proseduuriRouter);
 
 module.exports = app;
