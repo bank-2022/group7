@@ -1,6 +1,9 @@
 const db = require('../database');
 
 const tilitapahtuma = {
+  getById(id, callback) {
+    return db.query("select * from tilitapahtuma where idTilitapahtuma=?", [id], callback);
+  },
   getByTilinumero: function(idTilinumero, callback) {
     return db.query('select * from tilitapahtuma where idTilinumero=?', [idTilinumero], callback);
   },

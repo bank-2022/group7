@@ -2,17 +2,25 @@ const express = require('express');
 const router = express.Router();
 const tilitapahtuma = require('../models/tilitapahtuma_model');
 
-
-router.get('/', function(request, response) {
-  tilitapahtuma.getAll (function (err, dbResult) {
-    if (err) {
-      response.json(err);
+router.get("/:id?", (req, res) => {
+    if (req.params.id) {
+      tilitapahtuma.getById(req.params.id, (err, dbResult) => {
+        if (err) {
+          res.json(err);
+        } else {
+          res.json(dbResult);
+        }
+      });
     } else {
-      response.json(dbResult)
+      tilitapahtuma.getAll((err, dbResult) => {
+        if (err) {
+          res.json(err);
+        } else {
+          res.json(dbResult);
+        }
+      });
     }
-
   });
-});
 
 router.get('/tilinumero/:id', function(request, response) {
     if (request.params.id) {
@@ -37,8 +45,6 @@ router.get('/kortti/:id', function(request, response) {
 }
 });
 
-
-
 router.post('/', 
 function(request, response) {
   tilitapahtuma.add(request.body, function(err, dbResult) {
@@ -50,7 +56,6 @@ function(request, response) {
   });
 });
 
-
 router.delete('/:id', 
 function(request, response) {
   tilitapahtuma.delete(request.params.id, function(err, dbResult) {
@@ -61,7 +66,6 @@ function(request, response) {
     }
   });
 });
-
 
 router.put('/:id', 
 function(request, response) {
