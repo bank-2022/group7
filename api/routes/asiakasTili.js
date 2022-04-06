@@ -25,7 +25,7 @@ router.get('/', function(request, response) {
     } 
     });
     router.get('/:id?', function(request, response) {
-      if (request.params.idAsiakas) {
+      if (request.params.id) {
           asiakasTili.getByAsiakasId(request.params.id, function(err, dbResult) {
           if (err) {
               response.json(err);
