@@ -1,8 +1,8 @@
 const db = require('../database');
 
 const asiakasTili = {
-  getByAsiakasId: function(idAsiakas, callback) {
-    return db.query('select * from asiakastili where idAsiakas=?', [idAsiakas], callback);
+  getByAsiakasId: function(id, callback) {
+    return db.query('select * from asiakastili where idAsiakas=?', [id], callback);
   },
   getAll: function(callback) {
     return db.query('select * from asiakastili', callback);
