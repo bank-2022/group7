@@ -10,9 +10,11 @@ var cors = require("cors");
 var loginRouter = require('./routes/login');
 var usersRouter = require("./routes/users");
 var asiakasRouter = require("./routes/asiakas");
+var asiakasTiliRouter = require("./routes/asiakasTili");
 var korttiRouter = require("./routes/kortti");
-var proseduuriRouter = require("./routes/proseduuri");
+var tiliRouter = require("./routes/tili");
 var tilitapahtumaRouter = require("./routes/tilitapahtuma");
+var proseduuriRouter = require("./routes/proseduuri");
 
 var app = express();
 
@@ -29,9 +31,11 @@ app.use('/login', loginRouter);
 app.use(authenticateToken)
 app.use("/users", usersRouter);
 app.use("/asiakas", asiakasRouter);
+app.use("/asiakasTili", asiakasTiliRouter);
 app.use("/kortti", korttiRouter);
-app.use("/proseduuri", proseduuriRouter);
+app.use("/tili", tiliRouter);
 app.use("/tilitapahtuma", tilitapahtumaRouter);
+app.use("/proseduuri", proseduuriRouter);
 
 function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
