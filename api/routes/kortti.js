@@ -24,6 +24,16 @@ router.get('/:id?',
   }
 });
 
+router.get('/asiakas/:id?', (request, response) => {
+    kortti.getAsiakasByKortti(request.params.id, (err, dbResult) => {
+      if (err) {
+        response.json(err);
+      } else {
+        response.json(dbResult[0]);
+      }
+    });
+});
+
 router.post('/', 
 function(request, response) {
   kortti.add(request.body, function(err, count) {
