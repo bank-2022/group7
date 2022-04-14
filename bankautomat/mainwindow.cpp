@@ -1,13 +1,14 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
 
-    //objRestApi = new Rest_api;
+    objRestApi = new Rest_api;
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->summatWidget->setVisible(false);
@@ -15,21 +16,21 @@ MainWindow::MainWindow(QWidget *parent)
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     ui->otsikkoLabel->setFont(f);
 
-    /*connect(this,SIGNAL(login(QString,QString)),
+    connect(this,SIGNAL(login(QString,QString)),
             objRestApi,SLOT(loginInSlot(QString,QString)));
     connect(this,SIGNAL(get()),
             objRestApi,SLOT(getInSlot()));
     connect(objRestApi,SIGNAL(webTokenOutSignal(QByteArray)),
             this,SLOT(loginHandler(QByteArray)));
 
-    ui->pinCode->setEchoMode(QLineEdit::Password);*/
+    ui->pinCode->setEchoMode(QLineEdit::Password);
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
-    //delete objRestApi;
-    //objRestApi = nullptr;
+    delete objRestApi;
+    objRestApi = nullptr;
 }
 
 void MainWindow::on_syotaPin_clicked()
@@ -73,7 +74,7 @@ void MainWindow::on_talletus_clicked()
 
 void MainWindow::on_tilisiirto_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(6);
+    ui->stackedWidget->setCurrentIndex(7);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Tilisiirto");
 }
@@ -95,10 +96,10 @@ void MainWindow::on_kirjauduUlos_clicked()
 
 void MainWindow::loginHandler(QByteArray webToken)
 {
-    qDebug()<<webToken;
     if(webToken == "false") {
         ui->kirjautumisLabel->setText("PIN VÄÄRIN");
     } else {
+        emit get();
         ui->stackedWidget->setCurrentIndex(2);
         ui->valikkoWidget->setVisible(true);
         ui->otsikkoLabel->setText("Terve");

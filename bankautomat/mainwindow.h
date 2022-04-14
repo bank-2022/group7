@@ -1,6 +1,8 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include "rest_api.h"
+
 #include <QMainWindow>
 #include <QDebug>
 #include <QObject>
@@ -56,7 +58,7 @@ signals:
 
 private:
     Ui::MainWindow *ui;
-    //Rest_api *objRestApi;
+    Rest_api *objRestApi;
     QString username;
     QString pin;
     QString webToken;
