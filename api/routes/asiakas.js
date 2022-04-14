@@ -8,7 +8,7 @@ router.get("/:id?", (req, res) => {
       if (err) {
         res.json(err);
       } else {
-        res.json(dbResult);
+        res.json(dbResult[0]);
       }
     });
   } else {
