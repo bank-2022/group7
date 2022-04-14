@@ -5,3 +5,7 @@ api/.env
 bankautomat/build/
 
 bankautomat/*.user
+
+bankautomat/rest_api_dll/build/
+
+bankautomat/rest_api_dll/*.user
