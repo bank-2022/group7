@@ -23,8 +23,8 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-win32:CONFIG(release, debug|release): LIBS += -L$$PWD/../rest_api_dll/build/release/ -lrest_api
-else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/../rest_api_dll/build/debug/ -lrest_api
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/rest_api_dll/build/release/ -lrest_api
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/rest_api_dll/build/debug/ -lrest_api
 
-INCLUDEPATH += $$PWD/../rest_api_dll
-DEPENDPATH += $$PWD/../rest_api_dll
+INCLUDEPATH += $$PWD/rest_api_dll
+DEPENDPATH += $$PWD/rest_api_dll
