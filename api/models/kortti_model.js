@@ -9,6 +9,10 @@ const kortti={
   getById: (id, callback) => {
     return db.query('select * from kortti where idKortti=?', [id], callback);
   },
+  getAsiakasByKortti(id, callback) {
+    return db.query("select asiakas.idAsiakas, nimi, osoite, puhelinnumero from kortti inner join asiakas on asiakas.idAsiakas = kortti.idAsiakas where kortti.idKortti = ?",
+    [id], callback);
+  },
   add: (kortti, callback) => {
     bcrypt.hash(kortti.pin, saltRounds, (err, hash) => {
       return db.query('insert into kortti (pin, idTilinumero, idAsiakas) values(?,?,?)',
