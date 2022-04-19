@@ -3,44 +3,68 @@
 Rest_api::Rest_api()
 {
     base_url = "http://localhost:3000";
-    objGet = new get(base_url);
-    objLogin = new login(base_url);
-
-    connect(this,SIGNAL(loginInSignal(QString,QString)),
-            objLogin,SLOT(sendLogin(QString,QString)));
-
-    connect(objLogin,SIGNAL(webTokenOutSignal(QByteArray)),
-            this,SLOT(webTokenOutSlot(QByteArray)));
-
-    connect(this,SIGNAL(getInSignal(QByteArray,QString,QString)),
-            objGet,SLOT(sendGet(QByteArray,QString,QString)));
-
 }
 
 Rest_api::~Rest_api()
 {
-    delete objGet;
-    objGet = nullptr;
-    delete objLogin;
-    objLogin = nullptr;
+
 }
 
-void Rest_api::loginInSlot(QString username, QString pin)
+void Rest_api::sendPost(QString resource, QByteArray webToken, QJsonObject jsonObj)
 {
-    emit loginInSignal(username, pin);
+    resourceForExe = resource;
+    QNetworkRequest request(base_url+"/"+resource);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    //WEBTOKEN ALKU
+    QByteArray myToken="Bearer "+webToken;
+    request.setRawHeader(QByteArray("Authorization"),(myToken));
+    //WEBTOKEN LOPPU
+
+    manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(receiveData(QNetworkReply*)));
+
+        reply = manager->post(request, QJsonDocument(jsonObj).toJson());
 }
 
-void Rest_api::webTokenOutSlot(QByteArray token)
+void Rest_api::sendGet(QString resource, QByteArray webToken)
 {
-    webToken = token;
-    emit webTokenOutSignal(webToken);
+    resourceForExe = resource;
+    QNetworkRequest request(base_url+"/"+resource);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    //WEBTOKEN ALKU
+    QByteArray myToken="Bearer "+webToken;
+    request.setRawHeader(QByteArray("Authorization"),(myToken));
+    //WEBTOKEN LOPPU
+
+    manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(receiveData(QNetworkReply*)));
+
+    reply = manager->get(request);
 }
 
-void Rest_api::getInSlot()
+void Rest_api::sendPut(QString resource, QByteArray webToken, QJsonObject jsonObj)
 {
-    QString perse = "tilitapahtuma";
-    QString paska = "1";
-    emit getInSignal(webToken, perse, paska);
+    resourceForExe = resource;
+    QNetworkRequest request(base_url+"/"+resource);
+    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+
+    //WEBTOKEN ALKU
+    QByteArray myToken="Bearer "+webToken;
+    request.setRawHeader(QByteArray("Authorization"),(myToken));
+    //WEBTOKEN LOPPU
+
+    manager = new QNetworkAccessManager(this);
+    connect(manager, SIGNAL(finished(QNetworkReply*)), this, SLOT(receiveData(QNetworkReply*)));
+
+        reply = manager->put(request, QJsonDocument(jsonObj).toJson());
 }
 
-
+void Rest_api::receiveData(QNetworkReply *reply)
+{
+    response_data=reply->readAll();
+    reply->deleteLater();
+    manager->deleteLater();
+    emit returnData(resourceForExe, response_data);
+}

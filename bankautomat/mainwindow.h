@@ -21,6 +21,7 @@ public:
 
 
 private slots:
+    void processData(QString, QByteArray);
 
     void on_syotaPin_clicked();
 
@@ -36,7 +37,7 @@ private slots:
 
     void on_kirjauduUlos_clicked();
 
-    void loginHandler(QByteArray);
+    void loginHandler();
 
     void on_nosta10_clicked();
 
@@ -53,14 +54,18 @@ private slots:
     void on_naytaTiedot_clicked();
 
 signals:
-    void login(QString, QString);
-    void get();
+    void requestLogin(QString, QByteArray, QJsonObject);
+    void requestPost(QString, QByteArray, QJsonObject);
+    void requestGet(QString, QByteArray);
+    void requestPut(QString, QByteArray, QJsonObject);
+    void login();
 
 private:
     Ui::MainWindow *ui;
     Rest_api *objRestApi;
-    QString username;
+    QString kortinnro;
     QString pin;
-    QString webToken;
+    QByteArray webToken;
+    QJsonObject jsonObj;
 };
 #endif // MAINWINDOW_H
