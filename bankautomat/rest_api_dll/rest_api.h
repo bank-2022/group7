@@ -2,11 +2,13 @@
 #define REST_API_H
 
 #include "rest_api_global.h"
-#include "get.h"
-#include "login.h"
 
 #include <QObject>
 #include <QDebug>
+#include <QtNetwork>
+#include <QNetworkAccessManager>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 class REST_API_EXPORT Rest_api : public QObject
 {
@@ -15,19 +17,19 @@ public:
     Rest_api();
     ~Rest_api();
 public slots:
-    void loginInSlot(QString, QString);
-    void getInSlot();
-    void webTokenOutSlot(QByteArray);
+    void sendPost(QString, QByteArray, QJsonObject);
+    void sendGet(QString, QByteArray);
+    void sendPut(QString, QByteArray, QJsonObject);
+    void receiveData(QNetworkReply *reply);
 private:
     QString base_url;
-    get *objGet;
-    login *objLogin;
     QByteArray webToken;
+    QByteArray response_data;
+    QNetworkAccessManager *manager;
+    QNetworkReply *reply;
+    QString resourceForExe;
 signals:
-    void loginInSignal(QString, QString);
-    void getInSignal(QByteArray, QString, QString);
-    void webTokenOutSignal(QByteArray);
-
+    void returnData(QString, QByteArray);
 };
 
 #endif // REST_API_H
