@@ -10,7 +10,7 @@ Rfid_dll::Rfid_dll(QObject * parent)
     serial->setStopBits(QSerialPort::OneStop);
     serial->setFlowControl(QSerialPort::NoFlowControl);
     serial->open(QIODevice::ReadOnly);
-    connect(serial,SIGNAL(readyRead()),this, SLOT(readId()));
+    connect(serial, &QIODevice::readyRead, this, &Rfid_dll::readId);
 }
 
 Rfid_dll::~Rfid_dll()
