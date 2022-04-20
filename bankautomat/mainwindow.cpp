@@ -49,6 +49,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete objRestApi;
     objRestApi = nullptr;
+    delete oRfid;
+    oRfid = nullptr;
 }
 
 void MainWindow::processData(QString resource, QByteArray data)
@@ -71,6 +73,7 @@ void MainWindow::processData(QString resource, QByteArray data)
 void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
+    ui->pinCode->clear();
 }
 
 
@@ -137,6 +140,7 @@ void MainWindow::getRfid(QString id)
     id.remove(0,3).chop(3);
     qDebug()<<"Parsittu id: " + id;
     ui->idKortti->setText(id);
+    ui->pinCode->clear();
 }
 
 void MainWindow::on_kirjauduUlos_clicked()
