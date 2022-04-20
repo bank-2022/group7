@@ -42,8 +42,6 @@ private slots:
 
     void loginHandler();
 
-    void pinHandler();
-
     void on_nosta10_clicked();
 
     void on_nosta20_clicked();
@@ -59,6 +57,8 @@ private slots:
     void on_naytaTiedot_clicked();
 
     void getRfid(QString id);
+
+    void numpadHandler(QString);
 
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);

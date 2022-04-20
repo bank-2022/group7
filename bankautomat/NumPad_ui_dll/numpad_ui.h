@@ -19,6 +19,7 @@ class NUMPAD_UI_EXPORT numpad_ui : public QDialog
 public:
     explicit numpad_ui(QWidget *parent = nullptr);
     ~numpad_ui();
+    void clickedHandler(QString);
 
 private slots:
     void on_btn1_2_clicked();
@@ -48,9 +49,9 @@ private slots:
 private:
     Ui::numpad_ui *ui;
 
-    QString numArvo;
-signals:
+    QString pin;
 
+signals:
      void sendNumToExe(QString);
 };
 

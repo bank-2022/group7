@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::processData);
 
     connect(objNumPad, &numpad_ui::sendNumToExe,
-            this, &MainWindow::pinHandler);
+            this, &MainWindow::numpadHandler);
 
     connect(oRfid, &Rfid_dll::sendId,
             this, &MainWindow::getRfid);
@@ -59,7 +59,9 @@ MainWindow::~MainWindow()
 void MainWindow::processData(QString resource, QByteArray data)
 {
     if (resource == "login"){
+        qDebug()<<"KIRJAUTUMINEN";
         webToken = data;
+        qDebug()<<data;
         emit login();
     } else if (resource == "kortti/asiakas/" + kortinnro){
         resource = "kortti/tili/" + kortinnro;
@@ -114,10 +116,8 @@ void MainWindow::on_syotaPin_clicked()
 
 void MainWindow::on_kirjaudu_clicked()
 {
-    objNumPad->show();
  
     kortinnro = ui->idKortti->text();
-    pin = ui->pinCode->text();
 
     jsonObj.insert("idKortti", kortinnro);
     jsonObj.insert("pin", pin);
@@ -179,6 +179,12 @@ void MainWindow::getRfid(QString id)
     ui->kirjautumisLabel->clear();
 }
 
+void MainWindow::numpadHandler(QString paramPin)
+{
+    pin = paramPin;
+    qDebug()<<pin;
+}
+
 void MainWindow::on_kirjauduUlos_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
@@ -205,10 +211,6 @@ void MainWindow::loginHandler()
     }
 }
 
-void MainWindow::pinHandler()
-{
-
-}
 
 void MainWindow::on_nosta10_clicked()
 {
