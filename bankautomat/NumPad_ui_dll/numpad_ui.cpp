@@ -13,15 +13,32 @@ numpad_ui::~numpad_ui()
     delete ui;
 }
 
+
+
 void numpad_ui::clickedHandler(QString numero)
 {
-    pin.append(numero);
-    ui->lineEdit->setText(pin);
+    num.append(numero);
+    stringSizeLimiter(limitCondition, maxLength); // <---------------
+    ui->lineEdit->setText(num);
+}
+
+void numpad_ui::stringSizeLimiter(bool isLimited, int strMax)
+{
+    if(isLimited == false){
+        limitCondition = false;
+    }
+    else if(isLimited == true){
+        limitCondition = true;
+        maxLength = strMax;
+        if(num.length() > maxLength){
+            num.remove(maxLength, 1);
+        }
+    }
 }
 
 void numpad_ui::on_btnEnter_clicked()
 {
-    emit sendNumToExe(pin);
+    emit returnNum(num);
 }
 
 void numpad_ui::on_btn1_2_clicked()
@@ -87,7 +104,7 @@ void numpad_ui::on_btn0_clicked()
 void numpad_ui::on_btnClear_clicked()
 {
     ui->lineEdit->clear();
-    pin.clear();
+    num.clear();
 }
 
 

@@ -38,7 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objRestApi, &Rest_api::returnData,
             this, &MainWindow::processData);
 
-    connect(objNumPad, &numpad_ui::sendNumToExe,
+    connect(objNumPad, &numpad_ui::returnNum,
             this, &MainWindow::numpadHandler);
 
     connect(oRfid, &Rfid_dll::sendId,
@@ -111,6 +111,7 @@ void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
     ui->pinCode->clear();
+    objNumPad->stringSizeLimiter(false, 0);
     objNumPad->show();
 }
 
@@ -179,9 +180,9 @@ void MainWindow::getRfid(QString id)
     ui->kirjautumisLabel->clear();
 }
 
-void MainWindow::numpadHandler(QString paramPin)
+void MainWindow::numpadHandler(QString paramNum)
 {
-    pin = paramPin;
+    pin = paramNum;
     qDebug()<<pin;
 }
 

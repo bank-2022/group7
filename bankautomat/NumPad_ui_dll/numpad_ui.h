@@ -21,6 +21,8 @@ public:
     ~numpad_ui();
     void clickedHandler(QString);
 
+    void stringSizeLimiter(bool, int);
+
 private slots:
     void on_btn1_2_clicked();
 
@@ -49,10 +51,11 @@ private slots:
 private:
     Ui::numpad_ui *ui;
 
-    QString pin;
-
+    QString num;
+    bool limitCondition;
+    int maxLength;
 signals:
-     void sendNumToExe(QString);
+     void returnNum(QString);
 };
 
 #endif // NUMPAD_UI_H
