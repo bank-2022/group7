@@ -1,5 +1,7 @@
 QT       += core gui
 QT       += network
+QT       += serialport
+
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++11
@@ -28,3 +30,8 @@ else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/rest_api_dll/build/debu
 
 INCLUDEPATH += $$PWD/rest_api_dll
 DEPENDPATH += $$PWD/rest_api_dll
+
+win32: LIBS += -L$$PWD/rfid_dll/build/debug/ -lrfid_dll
+
+INCLUDEPATH += $$PWD/rfid_dll
+DEPENDPATH += $$PWD/rfid_dll

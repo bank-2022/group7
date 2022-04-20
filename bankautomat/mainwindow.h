@@ -2,10 +2,12 @@
 #define MAINWINDOW_H
 
 #include "rest_api.h"
+#include "rfid_dll.h"
 
 #include <QMainWindow>
 #include <QDebug>
 #include <QObject>
+#include <QSerialPort>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -53,6 +55,8 @@ private slots:
 
     void on_naytaTiedot_clicked();
 
+    void getRfid(QString id);
+
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
@@ -63,6 +67,7 @@ signals:
 private:
     Ui::MainWindow *ui;
     Rest_api *objRestApi;
+    Rfid_dll *oRfid;
     QString kortinnro;
     QString pin;
     QByteArray webToken;

@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     objRestApi = new Rest_api;
+    oRfid = new Rfid_dll;
 
     ui->pinCode->setEchoMode(QLineEdit::Password);
     QFont f( "Comic Sans MS", 25, QFont::Bold);
@@ -37,6 +38,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objRestApi, &Rest_api::returnData,
             this, &MainWindow::processData);
 
+    connect(oRfid, &Rfid_dll::sendId,
+            this, &MainWindow::getRfid);
+
 
 }
 
@@ -45,6 +49,8 @@ MainWindow::~MainWindow()
     delete ui;
     delete objRestApi;
     objRestApi = nullptr;
+    delete oRfid;
+    oRfid = nullptr;
 }
 
 void MainWindow::processData(QString resource, QByteArray data)
@@ -67,8 +73,8 @@ void MainWindow::processData(QString resource, QByteArray data)
 void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
+    ui->pinCode->clear();
 }
-
 
 void MainWindow::on_kirjaudu_clicked()
 {
@@ -123,6 +129,16 @@ void MainWindow::on_naytaTiedot_clicked()
     ui->stackedWidget->setCurrentIndex(4);
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tietosi");
+}
+
+void MainWindow::getRfid(QString id)
+{
+
+    ui->stackedWidget->setCurrentIndex(1);    
+    id.remove(0,3).chop(3);    
+    ui->idKortti->setText(id);
+    ui->pinCode->clear();
+    ui->kirjautumisLabel->clear();
 }
 
 void MainWindow::on_kirjauduUlos_clicked()
