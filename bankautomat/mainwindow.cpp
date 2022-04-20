@@ -9,23 +9,17 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     objRestApi = new Rest_api;
+    objNumPad = new numpad_ui;
+    oRfid = new Rfid_dll;
+
+    ui->pinCode->setEchoMode(QLineEdit::Password);
+    QFont f( "Comic Sans MS", 25, QFont::Bold);
+    ui->otsikkoLabel->setFont(f);
 
     ui->stackedWidget->setCurrentIndex(0);
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
-    QFont f( "Comic Sans MS", 25, QFont::Bold);
-    ui->otsikkoLabel->setFont(f);
 
-    connect(this,SIGNAL(login(QString,QString)),
-            objRestApi,SLOT(loginInSlot(QString,QString)));
-    connect(this,SIGNAL(get()),
-            objRestApi,SLOT(getInSlot()));
-    connect(objRestApi,SIGNAL(webTokenOutSignal(QByteArray)),
-            this,SLOT(loginHandler(QByteArray)));
-
-<<<<<<< Updated upstream
-    ui->pinCode->setEchoMode(QLineEdit::Password);
-=======
     connect(this, &MainWindow::requestLogin,
             objRestApi, &Rest_api::sendPost);
 
@@ -44,13 +38,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objRestApi, &Rest_api::returnData,
             this, &MainWindow::processData);
 
-    connect (objNumPad, &numpad_ui::sendNumToExe,
-             this, &MainWindow::pinHandler);
+    connect(objNumPad, &numpad_ui::sendNumToExe,
+            this, &MainWindow::pinHandler);
 
     connect(oRfid, &Rfid_dll::sendId,
             this, &MainWindow::getRfid);
-
->>>>>>> Stashed changes
 }
 
 MainWindow::~MainWindow()
@@ -58,8 +50,6 @@ MainWindow::~MainWindow()
     delete ui;
     delete objRestApi;
     objRestApi = nullptr;
-<<<<<<< Updated upstream
-=======
     delete oRfid;
     oRfid = nullptr;
     delete objNumPad;
@@ -104,32 +94,37 @@ void MainWindow::processData(QString resource, QByteArray data)
                     +jsonObj["tilitapahtuma"].toString()+","
                     +QString::number(jsonObj["idKortti"].toInt())+"\r";
         }
+    } else if (resource == "kortti/asiakas/" + kortinnro){
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+            QJsonObject jsonObj = jsonDoc.object();
+            QString data = QString::number(jsonObj["idAsiakas"].toInt())+","
+                    +jsonObj["nimi"].toString()+","
+                    +jsonObj["osoite"].toString()+","
+                    +jsonObj["puhelinnumero"].toString();
+            qDebug()<<data;
     }
->>>>>>> Stashed changes
 }
 
 void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-<<<<<<< Updated upstream
-=======
     ui->pinCode->clear();
     objNumPad->show();
->>>>>>> Stashed changes
 }
-
 
 void MainWindow::on_kirjaudu_clicked()
 {
-<<<<<<< Updated upstream
-    username = ui->idKortti->text();
-=======
-
+    objNumPad->show();
+ 
     kortinnro = ui->idKortti->text();
->>>>>>> Stashed changes
     pin = ui->pinCode->text();
 
-    emit login(username, pin);
+    jsonObj.insert("idKortti", kortinnro);
+    jsonObj.insert("pin", pin);
+
+    QString resource = "login";
+
+    emit requestLogin(resource, webToken, jsonObj);
 }
 
 
@@ -138,6 +133,9 @@ void MainWindow::on_tilitapahtumat_clicked()
     ui->stackedWidget->setCurrentIndex(6);
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tilitapahtumat");
+
+    QString resource = "tilitapahtuma/kortti" + kortinnro;
+    emit requestGet(resource, webToken);
 }
 
 
@@ -171,26 +169,45 @@ void MainWindow::on_naytaTiedot_clicked()
     ui->otsikkoLabel->setText("Tietosi");
 }
 
+void MainWindow::getRfid(QString id)
+{
+
+    ui->stackedWidget->setCurrentIndex(1);    
+    id.remove(0,3).chop(3);    
+    ui->idKortti->setText(id);
+    ui->pinCode->clear();
+    ui->kirjautumisLabel->clear();
+}
+
 void MainWindow::on_kirjauduUlos_clicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
     ui->otsikkoLabel->setText("");
+    webToken = "";
 }
 
-void MainWindow::loginHandler(QByteArray webToken)
+void MainWindow::loginHandler()
 {
     if(webToken == "false") {
         ui->kirjautumisLabel->setText("PIN VÄÄRIN");
     } else {
-        emit get();
+
+        QString resource = "kortti/asiakas/" + kortinnro;
+        emit requestGet(resource, webToken);
+
         ui->stackedWidget->setCurrentIndex(2);
         ui->valikkoWidget->setVisible(true);
         ui->otsikkoLabel->setText("Terve");
         QString saldo = "50000";
         ui->saldoLCD->display(saldo);
     }
+}
+
+void MainWindow::pinHandler()
+{
+
 }
 
 void MainWindow::on_nosta10_clicked()
