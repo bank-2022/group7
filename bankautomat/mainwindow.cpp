@@ -23,7 +23,34 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objRestApi,SIGNAL(webTokenOutSignal(QByteArray)),
             this,SLOT(loginHandler(QByteArray)));
 
+<<<<<<< Updated upstream
     ui->pinCode->setEchoMode(QLineEdit::Password);
+=======
+    connect(this, &MainWindow::requestLogin,
+            objRestApi, &Rest_api::sendPost);
+
+    connect(this, &MainWindow::requestGet,
+            objRestApi, &Rest_api::sendGet);
+
+    connect(this, &MainWindow::requestPost,
+            objRestApi, &Rest_api::sendGet);
+
+    connect(this, &MainWindow::requestPut,
+            objRestApi, &Rest_api::sendGet);
+
+    connect(this, &MainWindow::login,
+            this, &MainWindow::loginHandler);
+
+    connect(objRestApi, &Rest_api::returnData,
+            this, &MainWindow::processData);
+
+    connect (objNumPad, &numpad_ui::sendNumToExe,
+             this, &MainWindow::pinHandler);
+
+    connect(oRfid, &Rfid_dll::sendId,
+            this, &MainWindow::getRfid);
+
+>>>>>>> Stashed changes
 }
 
 MainWindow::~MainWindow()
@@ -31,17 +58,75 @@ MainWindow::~MainWindow()
     delete ui;
     delete objRestApi;
     objRestApi = nullptr;
+<<<<<<< Updated upstream
+=======
+    delete oRfid;
+    oRfid = nullptr;
+    delete objNumPad;
+    objNumPad = nullptr;
+}
+
+void MainWindow::processData(QString resource, QByteArray data)
+{
+    if (resource == "login"){
+        webToken = data;
+        emit login();
+    } else if (resource == "kortti/asiakas/" + kortinnro){
+        resource = "kortti/tili/" + kortinnro;
+        emit requestGet(resource, webToken);
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+        QString data = QString::number(jsonObj["idAsiakas"].toInt())+","
+                +jsonObj["nimi"].toString()+","
+                +jsonObj["osoite"].toString()+","
+                +jsonObj["puhelinnumero"].toString();
+
+        //qDebug()<<data;
+
+    } else if(resource == "kortti/tili/" + kortinnro) {
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+        QString data = jsonObj["idTilinumero"].toString()+","
+                +QString::number(jsonObj["saldo"].toDouble());
+        //qDebug()<<data;
+    } else if (resource == "tilitapahtuma/kortti/" + kortinnro){
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonArray jsonArray = jsonDoc.array();
+        QString data;
+        foreach (const QJsonValue &value, jsonArray) {
+            QJsonObject jsonObj = value.toObject();
+
+            data+=QString::number(jsonObj["idTilitapahtuma"].toInt())+","
+                    +jsonObj["idTilinumero"].toString()+","
+                    +jsonObj["dateTime"].toString()+","
+                    +QString::number(jsonObj["summa"].toInt())+","
+                    +jsonObj["tilitapahtuma"].toString()+","
+                    +QString::number(jsonObj["idKortti"].toInt())+"\r";
+        }
+    }
+>>>>>>> Stashed changes
 }
 
 void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
+<<<<<<< Updated upstream
+=======
+    ui->pinCode->clear();
+    objNumPad->show();
+>>>>>>> Stashed changes
 }
 
 
 void MainWindow::on_kirjaudu_clicked()
 {
+<<<<<<< Updated upstream
     username = ui->idKortti->text();
+=======
+
+    kortinnro = ui->idKortti->text();
+>>>>>>> Stashed changes
     pin = ui->pinCode->text();
 
     emit login(username, pin);

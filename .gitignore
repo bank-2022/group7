@@ -4,4 +4,20 @@ api/.env
 
 bankautomat/build/
 
+<<<<<<< Updated upstream
 bankautomat/*.user
+=======
+bankautomat/*.user
+
+bankautomat/rest_api_dll/build/
+
+bankautomat/rest_api_dll/*.user
+
+bankautomat/rfid_dll/build/
+
+bankautomat/rfid_dll/*.user
+
+bankautomat/NumPad_ui_dll/build/
+
+bankautomat/NumPad_ui_dll/*.user
+>>>>>>> Stashed changes
