@@ -15,8 +15,8 @@ const kortti={
   },
   add: (kortti, callback) => {
     bcrypt.hash(kortti.pin, saltRounds, (err, hash) => {
-      return db.query('insert into kortti (pin, idTilinumero, idAsiakas) values(?,?,?)',
-      [hash, kortti.idTilinumero, kortti.idAsiakas], callback);
+      return db.query('insert into kortti (idKortti, pin, idTilinumero, idAsiakas) values(?,?,?,?)',
+      [kortti.idKortti, hash, kortti.idTilinumero, kortti.idAsiakas], callback);
     });
   },
   delete: (id, callback) => {
