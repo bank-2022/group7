@@ -20,7 +20,6 @@ MainWindow::MainWindow(QWidget *parent)
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
 
-
     connect(this, &MainWindow::requestLogin,
             objRestApi, &Rest_api::sendPost);
 
@@ -39,13 +38,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objRestApi, &Rest_api::returnData,
             this, &MainWindow::processData);
 
-
-    connect (objNumPad, &numpad_ui::sendNumToExe,
-             this, &MainWindow::pinHandler);
+    connect(objNumPad, &numpad_ui::sendNumToExe,
+            this, &MainWindow::pinHandler);
 
     connect(oRfid, &Rfid_dll::sendId,
             this, &MainWindow::getRfid);
-
 }
 
 MainWindow::~MainWindow()
@@ -62,9 +59,41 @@ MainWindow::~MainWindow()
 void MainWindow::processData(QString resource, QByteArray data)
 {
     if (resource == "login"){
-            webToken = data;
-            qDebug()<<webToken;
-            emit login();
+        webToken = data;
+        emit login();
+    } else if (resource == "kortti/asiakas/" + kortinnro){
+        resource = "kortti/tili/" + kortinnro;
+        emit requestGet(resource, webToken);
+
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+        QString data = QString::number(jsonObj["idAsiakas"].toInt())+","
+                +jsonObj["nimi"].toString()+","
+                +jsonObj["osoite"].toString()+","
+                +jsonObj["puhelinnumero"].toString();
+
+        //qDebug()<<data;
+
+    } else if(resource == "kortti/tili/" + kortinnro) {
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+        QString data = jsonObj["idTilinumero"].toString()+","
+                +QString::number(jsonObj["saldo"].toDouble());
+        //qDebug()<<data;
+    } else if (resource == "tilitapahtuma/kortti/" + kortinnro){
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonArray jsonArray = jsonDoc.array();
+        QString data;
+        foreach (const QJsonValue &value, jsonArray) {
+            QJsonObject jsonObj = value.toObject();
+
+            data+=QString::number(jsonObj["idTilitapahtuma"].toInt())+","
+                    +jsonObj["idTilinumero"].toString()+","
+                    +jsonObj["dateTime"].toString()+","
+                    +QString::number(jsonObj["summa"].toInt())+","
+                    +jsonObj["tilitapahtuma"].toString()+","
+                    +QString::number(jsonObj["idKortti"].toInt())+"\r";
+        }
     } else if (resource == "kortti/asiakas/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
             QJsonObject jsonObj = jsonDoc.object();
@@ -80,11 +109,13 @@ void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
     ui->pinCode->clear();
+    objNumPad->show();
 }
 
 void MainWindow::on_kirjaudu_clicked()
 {
     objNumPad->show();
+ 
     kortinnro = ui->idKortti->text();
     pin = ui->pinCode->text();
 
