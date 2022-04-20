@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     objRestApi = new Rest_api;
+    objNumPad = new numpad_ui;
     oRfid = new Rfid_dll;
 
     ui->pinCode->setEchoMode(QLineEdit::Password);
@@ -38,9 +39,12 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objRestApi, &Rest_api::returnData,
             this, &MainWindow::processData);
 
+
+    connect (objNumPad, &numpad_ui::sendNumToExe,
+             this, &MainWindow::pinHandler);
+
     connect(oRfid, &Rfid_dll::sendId,
             this, &MainWindow::getRfid);
-
 
 }
 
@@ -51,6 +55,8 @@ MainWindow::~MainWindow()
     objRestApi = nullptr;
     delete oRfid;
     oRfid = nullptr;
+    delete objNumPad;
+    objNumPad = nullptr;
 }
 
 void MainWindow::processData(QString resource, QByteArray data)
@@ -78,6 +84,7 @@ void MainWindow::on_syotaPin_clicked()
 
 void MainWindow::on_kirjaudu_clicked()
 {
+    objNumPad->show();
     kortinnro = ui->idKortti->text();
     pin = ui->pinCode->text();
 
@@ -165,6 +172,11 @@ void MainWindow::loginHandler()
         QString saldo = "50000";
         ui->saldoLCD->display(saldo);
     }
+}
+
+void MainWindow::pinHandler()
+{
+
 }
 
 void MainWindow::on_nosta10_clicked()

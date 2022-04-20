@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "rest_api.h"
+#include "numpad_ui.h"
 #include "rfid_dll.h"
 
 #include <QMainWindow>
@@ -41,6 +42,8 @@ private slots:
 
     void loginHandler();
 
+    void pinHandler();
+
     void on_nosta10_clicked();
 
     void on_nosta20_clicked();
@@ -72,5 +75,8 @@ private:
     QString pin;
     QByteArray webToken;
     QJsonObject jsonObj;
+    numpad_ui *objNumPad;
+
+
 };
 #endif // MAINWINDOW_H
