@@ -28,7 +28,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/login', loginRouter);
-app.use(authenticateToken)
+app.use(authenticateToken);
 app.use("/users", usersRouter);
 app.use("/asiakas", asiakasRouter);
 app.use("/asiakasTili", asiakasTiliRouter);

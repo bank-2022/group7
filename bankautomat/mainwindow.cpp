@@ -76,7 +76,6 @@ void MainWindow::on_syotaPin_clicked()
     ui->pinCode->clear();
 }
 
-
 void MainWindow::on_kirjaudu_clicked()
 {
     kortinnro = ui->idKortti->text();
@@ -135,12 +134,11 @@ void MainWindow::on_naytaTiedot_clicked()
 void MainWindow::getRfid(QString id)
 {
 
-    ui->stackedWidget->setCurrentIndex(1);
-    qDebug()<<id;
-    id.remove(0,3).chop(3);
-    qDebug()<<"Parsittu id: " + id;
+    ui->stackedWidget->setCurrentIndex(1);    
+    id.remove(0,3).chop(3);    
     ui->idKortti->setText(id);
     ui->pinCode->clear();
+    ui->kirjautumisLabel->clear();
 }
 
 void MainWindow::on_kirjauduUlos_clicked()

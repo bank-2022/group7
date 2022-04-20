@@ -1,6 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `bankautomat` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `bankautomat`;
--- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: bankautomat
 -- ------------------------------------------------------
@@ -82,7 +80,7 @@ DROP TABLE IF EXISTS `kortti`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `kortti` (
-  `idKortti` int NOT NULL AUTO_INCREMENT,
+  `idKortti` varchar(45) NOT NULL,
   `pin` varchar(255) NOT NULL,
   `idTilinumero` varchar(45) NOT NULL,
   `idAsiakas` int NOT NULL,
@@ -92,7 +90,7 @@ CREATE TABLE `kortti` (
   KEY `idAsiakas_idx` (`idAsiakas`),
   CONSTRAINT `idAsiakas1` FOREIGN KEY (`idAsiakas`) REFERENCES `asiakas` (`idAsiakas`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `idTilinumero0` FOREIGN KEY (`idTilinumero`) REFERENCES `tili` (`idTilinumero`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -101,7 +99,7 @@ CREATE TABLE `kortti` (
 
 LOCK TABLES `kortti` WRITE;
 /*!40000 ALTER TABLE `kortti` DISABLE KEYS */;
-INSERT INTO `kortti` VALUES (1,'0000','Tili_1',1),(2,'1111','Tili_1',2),(3,'2222','Tili_2',3),(4,'3333','Tili_3',3);
+INSERT INTO `kortti` VALUES ('0A005968A0','$2a$10$D3AMtKU2babFjfT5GunRl.hTYOB4ebAd3H54/5fYOorcOli9FBghC','Tili_2',3),('0B00301548','$2a$10$a4xYny5FmH.l33XEhlIb2ODZVmyCfimwI16ZUaYjUrJWNxsi8SKg6','Tili_3',2),('1','0000','Tili_1',1),('2','1111','Tili_1',2),('3','2222','Tili_2',3),('4','3333','Tili_3',3);
 /*!40000 ALTER TABLE `kortti` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -266,4 +264,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-01 10:59:04
+-- Dump completed on 2022-04-20 12:05:00
