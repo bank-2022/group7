@@ -16,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     ui->otsikkoLabel->setFont(f);
 
+    //Tableviewin asetukset
+    QHeaderView *hView;
+    hView = ui->tableView->horizontalHeader();
+    hView->setSectionResizeMode(QHeaderView::ResizeToContents);
+
     ui->stackedWidget->setCurrentIndex(0);
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
@@ -108,6 +113,35 @@ void MainWindow::processData(QString resource, QByteArray data)
                     +jsonObj["puhelinnumero"].toString();
             qDebug()<<data;
     }
+    else if (resource == "tilitapahtuma"){
+                QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+                QJsonArray json_array = jsonDoc.array();
+
+                QStandardItemModel *table_model = new QStandardItemModel(10,4);
+                table_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Tilinumero"));
+                table_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Aikaleima"));
+                table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Summa"));
+                table_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tyyppi"));
+
+                foreach (const QJsonValue &value, json_array) {
+                            QJsonObject jsonObj = value.toObject();
+
+                            QString date = jsonObj["dateTime"].toString();
+                            date.replace("-","/").replace("T"," ").chop(5);
+
+                            int row = jsonObj["idTilitapahtuma"].toInt() - 1;
+                            QStandardItem *Tilinumero = new QStandardItem(jsonObj["idTilinumero"].toString());
+                            table_model->setItem(row, 0, Tilinumero);
+                            QStandardItem *Aikaleima = new QStandardItem(date);
+                            table_model->setItem(row, 1, Aikaleima);
+                            QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
+                            table_model->setItem(row, 2, Summa);
+                            QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
+                            table_model->setItem(row, 3, Tyyppi);
+                 }
+                ui->tableView->setModel(table_model);
+
+}
 }
 
 void MainWindow::on_syotaPin_clicked()
@@ -141,7 +175,7 @@ void MainWindow::on_tilitapahtumat_clicked()
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tilitapahtumat");
 
-    QString resource = "tilitapahtuma/kortti/" + kortinnro;
+    QString resource = "tilitapahtuma";
     emit requestGet(resource, webToken);
 }
 
