@@ -3,8 +3,7 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <QObject>
-
+#include <QCloseEvent>
 #include "numpad_ui_global.h"
 
 
@@ -22,6 +21,10 @@ public:
     void clickedHandler(QString);
 
     void stringSizeLimiter(bool, int);
+    void censorInput(bool);
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_btn1_2_clicked();
@@ -50,7 +53,6 @@ private slots:
 
 private:
     Ui::numpad_ui *ui;
-
     QString num;
     bool limitCondition;
     int maxLength;

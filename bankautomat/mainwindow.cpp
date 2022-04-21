@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     objNumPad = new numpad_ui;
     oRfid = new Rfid_dll;
 
-    ui->pinCode->setEchoMode(QLineEdit::Password);
+
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     ui->otsikkoLabel->setFont(f);
 
@@ -110,14 +110,14 @@ void MainWindow::processData(QString resource, QByteArray data)
 void MainWindow::on_syotaPin_clicked()
 {
     ui->stackedWidget->setCurrentIndex(1);
-    ui->pinCode->clear();
-    objNumPad->stringSizeLimiter(false, 0);
+    objNumPad->stringSizeLimiter(true, 4);
+    objNumPad->censorInput(true);
     objNumPad->show();
+
 }
 
 void MainWindow::on_kirjaudu_clicked()
 {
- 
     kortinnro = ui->idKortti->text();
 
     jsonObj.insert("idKortti", kortinnro);
@@ -172,11 +172,9 @@ void MainWindow::on_naytaTiedot_clicked()
 
 void MainWindow::getRfid(QString id)
 {
-
     ui->stackedWidget->setCurrentIndex(1);    
     id.remove(0,3).chop(3);    
     ui->idKortti->setText(id);
-    ui->pinCode->clear();
     ui->kirjautumisLabel->clear();
 }
 
@@ -184,6 +182,7 @@ void MainWindow::numpadHandler(QString paramNum)
 {
     pin = paramNum;
     qDebug()<<pin;
+    objNumPad->close();
 }
 
 void MainWindow::on_kirjauduUlos_clicked()
@@ -191,8 +190,9 @@ void MainWindow::on_kirjauduUlos_clicked()
     ui->stackedWidget->setCurrentIndex(0);
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
-    ui->otsikkoLabel->setText("");
-    webToken = "";
+    ui->otsikkoLabel->clear();
+    pin.clear();
+    webToken.clear();
 }
 
 void MainWindow::loginHandler()
@@ -245,5 +245,13 @@ void MainWindow::on_nosta500_clicked()
 
 void MainWindow::on_muuSumma_clicked()
 {
-
+    objNumPad->stringSizeLimiter(false, 0);
+    objNumPad->censorInput(false);
+    objNumPad->show();
 }
+
+void MainWindow::on_showNumpad_clicked()
+{
+    objNumPad->show();
+}
+

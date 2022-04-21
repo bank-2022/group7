@@ -6,6 +6,7 @@ numpad_ui::numpad_ui(QWidget *parent) :
     ui(new Ui::numpad_ui)
 {
     ui->setupUi(this);
+    limitCondition = false;
 }
 
 numpad_ui::~numpad_ui()
@@ -13,12 +14,18 @@ numpad_ui::~numpad_ui()
     delete ui;
 }
 
+void numpad_ui::closeEvent(QCloseEvent *event)
+{
+    ui->lineEdit->clear();
+    num.clear();
+    event->accept();
+}
 
 
 void numpad_ui::clickedHandler(QString numero)
 {
     num.append(numero);
-    stringSizeLimiter(limitCondition, maxLength); // <---------------
+    stringSizeLimiter(limitCondition, maxLength);
     ui->lineEdit->setText(num);
 }
 
@@ -36,9 +43,21 @@ void numpad_ui::stringSizeLimiter(bool isLimited, int strMax)
     }
 }
 
+void numpad_ui::censorInput(bool isCensored)
+{
+    if(isCensored == false){
+        ui->lineEdit->setEchoMode(QLineEdit::Normal);
+    } else if(isCensored == true){
+        ui->lineEdit->setEchoMode(QLineEdit::Password);
+    }
+}
+
 void numpad_ui::on_btnEnter_clicked()
 {
     emit returnNum(num);
+    ui->lineEdit->clear();
+    num.clear();
+
 }
 
 void numpad_ui::on_btn1_2_clicked()

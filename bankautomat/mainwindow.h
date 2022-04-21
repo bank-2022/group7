@@ -60,6 +60,8 @@ private slots:
 
     void numpadHandler(QString);
 
+    void on_showNumpad_clicked();
+
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
