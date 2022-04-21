@@ -22,6 +22,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+    enum states{
+        kirjaudu,
+        nosto,
+        talletus,
+        tilisiirto
+    };
 
 private slots:
     void processData(QString, QByteArray);
@@ -42,17 +48,19 @@ private slots:
 
     void loginHandler();
 
-    void on_nosta10_clicked();
+    void on_summa10_clicked();
 
-    void on_nosta20_clicked();
+    void on_summa20_clicked();
 
-    void on_nosta50_clicked();
+    void on_summa50_clicked();
 
-    void on_nosta100_clicked();
+    void on_summa100_clicked();
 
-    void on_nosta500_clicked();
+    void on_summa500_clicked();
 
-    void on_muuSumma_clicked();
+    void on_summaMuu_clicked();
+
+    void summaHandler(QString, states);
 
     void on_naytaTiedot_clicked();
 
@@ -68,16 +76,18 @@ signals:
     void requestGet(QString, QByteArray);
     void requestPut(QString, QByteArray, QJsonObject);
     void login();
+    void muuSumma(QString, states);
 
 private:
     Ui::MainWindow *ui;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
     QString kortinnro;
-    QString pin;
+    QString num;
     QByteArray webToken;
-    QJsonObject jsonObj;
     numpad_ui *objNumPad;
+
+    states state;
 
 
 };

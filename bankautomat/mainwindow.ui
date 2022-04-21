@@ -163,7 +163,7 @@ p, li { white-space: pre-wrap; }
       <height>161</height>
      </rect>
     </property>
-    <widget class="QPushButton" name="nosta10">
+    <widget class="QPushButton" name="summa10">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -176,7 +176,7 @@ p, li { white-space: pre-wrap; }
       <string>10</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="nosta20">
+    <widget class="QPushButton" name="summa20">
      <property name="geometry">
       <rect>
        <x>130</x>
@@ -189,7 +189,7 @@ p, li { white-space: pre-wrap; }
       <string>20</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="nosta50">
+    <widget class="QPushButton" name="summa50">
      <property name="geometry">
       <rect>
        <x>230</x>
@@ -202,7 +202,7 @@ p, li { white-space: pre-wrap; }
       <string>50</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="nosta100">
+    <widget class="QPushButton" name="summa100">
      <property name="geometry">
       <rect>
        <x>30</x>
@@ -215,7 +215,7 @@ p, li { white-space: pre-wrap; }
       <string>100</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="nosta500">
+    <widget class="QPushButton" name="summa500">
      <property name="geometry">
       <rect>
        <x>130</x>
@@ -228,7 +228,7 @@ p, li { white-space: pre-wrap; }
       <string>500</string>
      </property>
     </widget>
-    <widget class="QPushButton" name="muuSumma">
+    <widget class="QPushButton" name="summaMuu">
      <property name="geometry">
       <rect>
        <x>230</x>
