@@ -29,6 +29,17 @@ public:
         tilisiirto
     };
 
+    enum pages{
+        tervetuloaPage,
+        kirjauduPage,
+        mainPage,
+        nostoPage,
+        naytatiedotPage,
+        talletusPage,
+        tilitapahtumaPage,
+        tilisiirtoPage
+    };
+
 private slots:
     void processData(QString, QByteArray);
 
