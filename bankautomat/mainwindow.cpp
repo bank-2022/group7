@@ -27,10 +27,10 @@ MainWindow::MainWindow(QWidget *parent)
             objRestApi, &Rest_api::sendGet);
 
     connect(this, &MainWindow::requestPost,
-            objRestApi, &Rest_api::sendGet);
+            objRestApi, &Rest_api::sendPost);
 
     connect(this, &MainWindow::requestPut,
-            objRestApi, &Rest_api::sendGet);
+            objRestApi, &Rest_api::sendPut);
 
     connect(this, &MainWindow::login,
             this, &MainWindow::loginHandler);
@@ -113,19 +113,21 @@ void MainWindow::on_syotaPin_clicked()
     objNumPad->stringSizeLimiter(true, 4);
     objNumPad->censorInput(true);
     objNumPad->show();
-
 }
 
 void MainWindow::on_kirjaudu_clicked()
 {
     kortinnro = ui->idKortti->text();
 
+    QJsonObject jsonObj;
     jsonObj.insert("idKortti", kortinnro);
-    jsonObj.insert("pin", pin);
+    jsonObj.insert("pin", num);
 
     QString resource = "login";
 
     emit requestLogin(resource, webToken, jsonObj);
+
+    num.clear();
 }
 
 
@@ -135,7 +137,7 @@ void MainWindow::on_tilitapahtumat_clicked()
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tilitapahtumat");
 
-    QString resource = "tilitapahtuma/kortti" + kortinnro;
+    QString resource = "tilitapahtuma/kortti/" + kortinnro;
     emit requestGet(resource, webToken);
 }
 
@@ -145,6 +147,7 @@ void MainWindow::on_nosto_clicked()
     ui->stackedWidget->setCurrentIndex(3);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Nosto");
+    state = nosto;
 }
 
 
@@ -153,6 +156,7 @@ void MainWindow::on_talletus_clicked()
     ui->stackedWidget->setCurrentIndex(5);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Talletus");
+    state = talletus;
 }
 
 
@@ -161,6 +165,7 @@ void MainWindow::on_tilisiirto_clicked()
     ui->stackedWidget->setCurrentIndex(7);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Tilisiirto");
+    state = tilisiirto;
 }
 
 void MainWindow::on_naytaTiedot_clicked()
@@ -180,8 +185,8 @@ void MainWindow::getRfid(QString id)
 
 void MainWindow::numpadHandler(QString paramNum)
 {
-    pin = paramNum;
-    qDebug()<<pin;
+    num = paramNum;
+    qDebug()<<num;
     objNumPad->close();
 }
 
@@ -191,7 +196,7 @@ void MainWindow::on_kirjauduUlos_clicked()
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
     ui->otsikkoLabel->clear();
-    pin.clear();
+    num.clear();
     webToken.clear();
 }
 
@@ -213,41 +218,71 @@ void MainWindow::loginHandler()
 }
 
 
-void MainWindow::on_nosta10_clicked()
+void MainWindow::on_summa10_clicked()
 {
-
+    summaHandler("10", state);
 }
 
 
-void MainWindow::on_nosta20_clicked()
+void MainWindow::on_summa20_clicked()
 {
-
+    summaHandler("20", state);
 }
 
 
-void MainWindow::on_nosta50_clicked()
+void MainWindow::on_summa50_clicked()
 {
-
+    summaHandler("50", state);
 }
 
 
-void MainWindow::on_nosta100_clicked()
+void MainWindow::on_summa100_clicked()
 {
-
+    summaHandler("100", state);
 }
 
 
-void MainWindow::on_nosta500_clicked()
+void MainWindow::on_summa500_clicked()
 {
-
+    summaHandler("500", state);
 }
 
 
-void MainWindow::on_muuSumma_clicked()
+void MainWindow::on_summaMuu_clicked()
 {
     objNumPad->stringSizeLimiter(false, 0);
     objNumPad->censorInput(false);
     objNumPad->show();
+}
+
+void MainWindow::summaHandler(QString summa, states s)
+{
+    num = summa;
+    QString resource;
+    QJsonObject jsonObj;
+
+    QString tilinro = "Tili_1";
+    QString receiverTilinro = "Tili_2";
+
+    if(s == nosto){
+        resource = "proseduuri/nosto";
+        jsonObj.insert("kortinnro", kortinnro);
+        jsonObj.insert("tilinro", tilinro);
+        jsonObj.insert("rahasumma", num);
+    } else if(s == talletus){
+        resource = "proseduuri/talletus";
+        jsonObj.insert("kortinnro", kortinnro);
+        jsonObj.insert("tilinro", tilinro);
+        jsonObj.insert("rahasumma", num);
+    } else if(s == tilisiirto){
+        resource = "proseduuri/tilisiirto";
+        jsonObj.insert("kortinnro", kortinnro);
+        jsonObj.insert("sendertilinro", tilinro);
+        jsonObj.insert("receivertilinro", receiverTilinro);
+        jsonObj.insert("rahasumma", num);
+    }
+    qDebug()<<jsonObj;
+    emit requestPost(resource, webToken, jsonObj);
 }
 
 void MainWindow::on_showNumpad_clicked()
