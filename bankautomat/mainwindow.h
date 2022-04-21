@@ -23,6 +23,7 @@ public:
     ~MainWindow();
 
     enum states{
+        kirjaudu,
         nosto,
         talletus,
         tilisiirto
@@ -75,6 +76,7 @@ signals:
     void requestGet(QString, QByteArray);
     void requestPut(QString, QByteArray, QJsonObject);
     void login();
+    void muuSumma(QString, states);
 
 private:
     Ui::MainWindow *ui;

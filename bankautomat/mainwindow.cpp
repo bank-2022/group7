@@ -43,6 +43,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(oRfid, &Rfid_dll::sendId,
             this, &MainWindow::getRfid);
+
+    connect(this, &MainWindow::muuSumma,
+            this, &MainWindow::summaHandler);
 }
 
 MainWindow::~MainWindow()
@@ -113,6 +116,7 @@ void MainWindow::on_syotaPin_clicked()
     objNumPad->stringSizeLimiter(true, 4);
     objNumPad->censorInput(true);
     objNumPad->show();
+    state = kirjaudu;
 }
 
 void MainWindow::on_kirjaudu_clicked()
@@ -185,9 +189,13 @@ void MainWindow::getRfid(QString id)
 
 void MainWindow::numpadHandler(QString paramNum)
 {
-    num = paramNum;
-    qDebug()<<num;
-    objNumPad->close();
+    if(state == kirjaudu){
+        num = paramNum;
+        objNumPad->close();
+    } else {
+        objNumPad->close();
+        emit muuSumma(paramNum, state);
+    }
 }
 
 void MainWindow::on_kirjauduUlos_clicked()
@@ -262,6 +270,7 @@ void MainWindow::summaHandler(QString summa, states s)
     QJsonObject jsonObj;
 
     QString tilinro = "Tili_1";
+
     QString receiverTilinro = "Tili_2";
 
     if(s == nosto){
