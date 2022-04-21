@@ -3,8 +3,7 @@
 
 #include <QDialog>
 #include <QDebug>
-#include <QObject>
-
+#include <QCloseEvent>
 #include "numpad_ui_global.h"
 
 
@@ -19,6 +18,13 @@ class NUMPAD_UI_EXPORT numpad_ui : public QDialog
 public:
     explicit numpad_ui(QWidget *parent = nullptr);
     ~numpad_ui();
+    void clickedHandler(QString);
+
+    void stringSizeLimiter(bool, int);
+    void censorInput(bool);
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
     void on_btn1_2_clicked();
@@ -47,11 +53,11 @@ private slots:
 
 private:
     Ui::numpad_ui *ui;
-
-    QString numArvo;
+    QString num;
+    bool limitCondition;
+    int maxLength;
 signals:
-
-     void sendNumToExe(QString);
+     void returnNum(QString);
 };
 
 #endif // NUMPAD_UI_H
