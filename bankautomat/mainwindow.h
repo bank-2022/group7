@@ -44,43 +44,24 @@ public:
 
 private slots:
     void processData(QString, QByteArray);
-
     void on_syotaPin_clicked();
-
     void on_kirjaudu_clicked();
-
     void on_tilitapahtumat_clicked();
-
     void on_nosto_clicked();
-
     void on_talletus_clicked();
-
     void on_tilisiirto_clicked();
-
     void on_kirjauduUlos_clicked();
-
     void loginHandler();
-
     void on_summa10_clicked();
-
     void on_summa20_clicked();
-
     void on_summa50_clicked();
-
     void on_summa100_clicked();
-
     void on_summa500_clicked();
-
     void on_summaMuu_clicked();
-
     void summaHandler(QString, states);
-
     void on_naytaTiedot_clicked();
-
     void getRfid(QString id);
-
     void numpadHandler(QString);
-
     void on_showNumpad_clicked();
 
 signals:
@@ -99,6 +80,7 @@ private:
     QString num;
     QByteArray webToken;
     numpad_ui *objNumPad;
+    QString nimi, osoite, puhnro, tilinro, saldo;
 
     states state;
 

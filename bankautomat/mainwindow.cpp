@@ -72,78 +72,55 @@ void MainWindow::processData(QString resource, QByteArray data)
         qDebug()<<"KIRJAUTUMINEN";
         webToken = data;
         qDebug()<<data;
-        emit login();
-    } else if (resource == "kortti/asiakas/" + kortinnro){
-        resource = "kortti/tili/" + kortinnro;
-        emit requestGet(resource, webToken);
 
+        QString resourceX = "kortti/asiakasjatili/" + kortinnro; //nämä johonkin muualle
+        emit requestGet(resourceX, webToken);                    //nämä johonkin muualle
+
+    } else if (resource == "kortti/asiakasjatili/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonObject jsonObj = jsonDoc.object();
-        QString data = QString::number(jsonObj["idAsiakas"].toInt())+","
-                +jsonObj["nimi"].toString()+","
-                +jsonObj["osoite"].toString()+","
-                +jsonObj["puhelinnumero"].toString();
 
-        //qDebug()<<data;
+        //QString idAsiakas = QString::number(jsonObj["idAsiakas"].toInt());
+        nimi = jsonObj["nimi"].toString();
+        osoite = jsonObj["osoite"].toString();
+        puhnro = jsonObj["puhelinnumero"].toString();
+        tilinro = jsonObj["idTilinumero"].toString();
+        saldo = QString::number(jsonObj["saldo"].toDouble()); //ei näy oikein
 
-    } else if(resource == "kortti/tili/" + kortinnro) {
+        qDebug()<<nimi;
+        qDebug()<<osoite;
+        qDebug()<<saldo;
+        qDebug()<<tilinro;
+        emit login();   //tämä johonkin muualle
+
+    } else if (resource == "tilitapahtuma/"){ //kortin vai tilin perusteella?
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-        QJsonObject jsonObj = jsonDoc.object();
-        QString data = jsonObj["idTilinumero"].toString()+","
-                +QString::number(jsonObj["saldo"].toDouble());
-        //qDebug()<<data;
-    } else if (resource == "tilitapahtuma/kortti/" + kortinnro){
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-        QJsonArray jsonArray = jsonDoc.array();
-        QString data;
-        foreach (const QJsonValue &value, jsonArray) {
+        QJsonArray json_array = jsonDoc.array();
+
+        QStandardItemModel *table_model = new QStandardItemModel(10,4);
+        table_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Tilinumero"));
+        table_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Aikaleima"));
+        table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Summa"));
+        table_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tyyppi"));
+
+        foreach (const QJsonValue &value, json_array) {
             QJsonObject jsonObj = value.toObject();
 
-            data+=QString::number(jsonObj["idTilitapahtuma"].toInt())+","
-                    +jsonObj["idTilinumero"].toString()+","
-                    +jsonObj["dateTime"].toString()+","
-                    +QString::number(jsonObj["summa"].toInt())+","
-                    +jsonObj["tilitapahtuma"].toString()+","
-                    +QString::number(jsonObj["idKortti"].toInt())+"\r";
+            QString date = jsonObj["dateTime"].toString();
+            date.replace("-","/").replace("T"," ").chop(5);
+
+            int row = jsonObj["idTilitapahtuma"].toInt() - 1;
+            QStandardItem *Tilinumero = new QStandardItem(jsonObj["idTilinumero"].toString());
+            table_model->setItem(row, 0, Tilinumero);
+            QStandardItem *Aikaleima = new QStandardItem(date);
+            table_model->setItem(row, 1, Aikaleima);
+            QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
+            table_model->setItem(row, 2, Summa);
+            QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
+            table_model->setItem(row, 3, Tyyppi);
         }
-    } else if (resource == "kortti/asiakas/" + kortinnro){
-        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-            QJsonObject jsonObj = jsonDoc.object();
-            QString data = QString::number(jsonObj["idAsiakas"].toInt())+","
-                    +jsonObj["nimi"].toString()+","
-                    +jsonObj["osoite"].toString()+","
-                    +jsonObj["puhelinnumero"].toString();
-            qDebug()<<data;
+        ui->tableView->setModel(table_model);
     }
-    else if (resource == "tilitapahtuma"){
-                QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
-                QJsonArray json_array = jsonDoc.array();
-
-                QStandardItemModel *table_model = new QStandardItemModel(10,4);
-                table_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Tilinumero"));
-                table_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Aikaleima"));
-                table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Summa"));
-                table_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tyyppi"));
-
-                foreach (const QJsonValue &value, json_array) {
-                            QJsonObject jsonObj = value.toObject();
-
-                            QString date = jsonObj["dateTime"].toString();
-                            date.replace("-","/").replace("T"," ").chop(5);
-
-                            int row = jsonObj["idTilitapahtuma"].toInt() - 1;
-                            QStandardItem *Tilinumero = new QStandardItem(jsonObj["idTilinumero"].toString());
-                            table_model->setItem(row, 0, Tilinumero);
-                            QStandardItem *Aikaleima = new QStandardItem(date);
-                            table_model->setItem(row, 1, Aikaleima);
-                            QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
-                            table_model->setItem(row, 2, Summa);
-                            QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
-                            table_model->setItem(row, 3, Tyyppi);
-                 }
-                ui->tableView->setModel(table_model);
-
-}
 }
 
 void MainWindow::on_syotaPin_clicked()
@@ -164,7 +141,6 @@ void MainWindow::on_kirjaudu_clicked()
     jsonObj.insert("pin", num);
 
     QString resource = "login";
-
     emit requestLogin(resource, webToken, jsonObj);
 
     num.clear();
@@ -177,14 +153,14 @@ void MainWindow::on_tilitapahtumat_clicked()
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tilitapahtumat");
 
-    QString resource = "tilitapahtuma";
+    QString resource = "tilitapahtuma/"; //kortin vai tilin perusteella?
     emit requestGet(resource, webToken);
 }
 
 
 void MainWindow::on_nosto_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(mainPage);
+    ui->stackedWidget->setCurrentIndex(nostoPage);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Nosto");
     state = nosto;
@@ -218,7 +194,7 @@ void MainWindow::on_naytaTiedot_clicked()
 void MainWindow::getRfid(QString id)
 {
     ui->stackedWidget->setCurrentIndex(kirjauduPage);
-    id.remove(0,3).chop(3);    
+    id.remove(0,3).chop(3);
     ui->idKortti->setText(id);
     ui->kirjautumisLabel->clear();
 }
@@ -249,18 +225,12 @@ void MainWindow::loginHandler()
     if(webToken == "false") {
         ui->kirjautumisLabel->setText("PIN VÄÄRIN");
     } else {
-
-        QString resource = "kortti/asiakas/" + kortinnro;
-        emit requestGet(resource, webToken);
-
-        ui->stackedWidget->setCurrentIndex(2);
+        ui->stackedWidget->setCurrentIndex(mainPage);
         ui->valikkoWidget->setVisible(true);
-        ui->otsikkoLabel->setText("Terve");
-        QString saldo = "50000";
+        ui->otsikkoLabel->setText("Terve " + nimi);
         ui->saldoLCD->display(saldo);
     }
 }
-
 
 void MainWindow::on_summa10_clicked()
 {
@@ -291,7 +261,6 @@ void MainWindow::on_summa500_clicked()
     summaHandler("500", state);
 }
 
-
 void MainWindow::on_summaMuu_clicked()
 {
     objNumPad->stringSizeLimiter(false, 0);
@@ -304,8 +273,6 @@ void MainWindow::summaHandler(QString summa, states s)
     num = summa;
     QString resource;
     QJsonObject jsonObj;
-
-    QString tilinro = "Tili_1";
 
     QString receiverTilinro = "Tili_2";
 
