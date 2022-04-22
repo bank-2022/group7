@@ -12,9 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
     objNumPad = new numpad_ui;
     oRfid = new Rfid_dll;
 
-
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     ui->otsikkoLabel->setFont(f);
+
+    ui->stackedWidget->setCurrentIndex(tervetuloaPage);
 
     //Tableviewin asetukset
     QHeaderView *hView;
@@ -22,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent)
     hView->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     ui->stackedWidget->setCurrentIndex(0);
+
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
 
@@ -146,7 +148,7 @@ void MainWindow::processData(QString resource, QByteArray data)
 
 void MainWindow::on_syotaPin_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(1);
+    ui->stackedWidget->setCurrentIndex(kirjauduPage);
     objNumPad->stringSizeLimiter(true, 4);
     objNumPad->censorInput(true);
     objNumPad->show();
@@ -171,7 +173,7 @@ void MainWindow::on_kirjaudu_clicked()
 
 void MainWindow::on_tilitapahtumat_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(6);
+    ui->stackedWidget->setCurrentIndex(tilitapahtumaPage);
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tilitapahtumat");
 
@@ -182,7 +184,7 @@ void MainWindow::on_tilitapahtumat_clicked()
 
 void MainWindow::on_nosto_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(3);
+    ui->stackedWidget->setCurrentIndex(mainPage);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Nosto");
     state = nosto;
@@ -191,7 +193,7 @@ void MainWindow::on_nosto_clicked()
 
 void MainWindow::on_talletus_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(5);
+    ui->stackedWidget->setCurrentIndex(talletusPage);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Talletus");
     state = talletus;
@@ -200,7 +202,7 @@ void MainWindow::on_talletus_clicked()
 
 void MainWindow::on_tilisiirto_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(7);
+    ui->stackedWidget->setCurrentIndex(tilisiirtoPage);
     ui->summatWidget->setVisible(true);
     ui->otsikkoLabel->setText("Tilisiirto");
     state = tilisiirto;
@@ -208,14 +210,14 @@ void MainWindow::on_tilisiirto_clicked()
 
 void MainWindow::on_naytaTiedot_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(4);
+    ui->stackedWidget->setCurrentIndex(naytatiedotPage);
     ui->summatWidget->setVisible(false);
     ui->otsikkoLabel->setText("Tietosi");
 }
 
 void MainWindow::getRfid(QString id)
 {
-    ui->stackedWidget->setCurrentIndex(1);    
+    ui->stackedWidget->setCurrentIndex(kirjauduPage);
     id.remove(0,3).chop(3);    
     ui->idKortti->setText(id);
     ui->kirjautumisLabel->clear();
@@ -234,7 +236,7 @@ void MainWindow::numpadHandler(QString paramNum)
 
 void MainWindow::on_kirjauduUlos_clicked()
 {
-    ui->stackedWidget->setCurrentIndex(0);
+    ui->stackedWidget->setCurrentIndex(tervetuloaPage);
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
     ui->otsikkoLabel->clear();
