@@ -9,12 +9,8 @@ const kortti={
   getById: (id, callback) => {
     return db.query('select * from kortti where idKortti=?', [id], callback);
   },
-  getAsiakasByKortti(id, callback) {
-    return db.query("select asiakas.idAsiakas, nimi, osoite, puhelinnumero from kortti inner join asiakas on asiakas.idAsiakas = kortti.idAsiakas where kortti.idKortti = ?",
-    [id], callback);
-  },
-  getTiliByKortti(id, callback) {
-    return db.query("select tili.idTilinumero, saldo from kortti inner join tili on tili.idTilinumero = kortti.idTilinumero where kortti.idKortti = ?",
+  getAsiakasAndTiliByKortti(id, callback) {
+    return db.query("select nimi, osoite, puhelinnumero, tili.idTilinumero, saldo from kortti inner join asiakas on asiakas.idAsiakas = kortti.idAsiakas inner join tili on tili.idTilinumero = kortti.idTilinumero where kortti.idKortti = ?",
     [id], callback);
   },
   add: (kortti, callback) => {

@@ -24,24 +24,14 @@ router.get('/:id?',
   }
 });
 
-router.get('/asiakas/:id?', (request, response) => {
-    kortti.getAsiakasByKortti(request.params.id, (err, dbResult) => {
+router.get('/asiakasjatili/:id?', (request, response) => {
+    kortti.getAsiakasAndTiliByKortti(request.params.id, (err, dbResult) => {
       if (err) {
         response.json(err);
       } else {
         response.json(dbResult[0]);
       }
     });
-});
-
-router.get('/tili/:id?', (request, response) => {
-  kortti.getTiliByKortti(request.params.id, (err, dbResult) => {
-    if (err) {
-      response.json(err);
-    } else {
-      response.json(dbResult[0]);
-    }
-  });
 });
 
 router.post('/', 
