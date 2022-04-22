@@ -34,6 +34,16 @@ router.get('/asiakas/:id?', (request, response) => {
     });
 });
 
+router.get('/tili/:id?', (request, response) => {
+  kortti.getTiliByKortti(request.params.id, (err, dbResult) => {
+    if (err) {
+      response.json(err);
+    } else {
+      response.json(dbResult[0]);
+    }
+  });
+});
+
 router.post('/', 
 function(request, response) {
   kortti.add(request.body, function(err, count) {
