@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QObject>
 #include <QSerialPort>
+#include <QStandardItemModel>
+#include <QHeaderView>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
