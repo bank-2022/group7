@@ -48,6 +48,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(objNumPad, &numpad_ui::numpadEnterClicked,
             this, &MainWindow::numpadEnter_clicked);
 
+    connect(oRfid, &Rfid_dll::readEvent,
+            this, &MainWindow::on_syotaPin_clicked);
+
     state = eiKirjautunut;
 }
 
@@ -90,7 +93,6 @@ void MainWindow::eiKirjautunutHandler(events e)
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0";
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -131,7 +133,8 @@ void MainWindow::kirjautunutHandler(events e)
         event = tilisiirto;
         pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
     } else if (e == tilitapahtumat){
-        QString resource = "tilitapahtuma/"; //kortin vai tilin perusteella?
+        QString resource = "tilitapahtuma/tilinumero/" + tilinro; //kortin vai tilin perusteella?
+        qDebug()<<resource;
         emit requestGet(resource, webToken);
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
     } else if (e == naytaTiedot){
@@ -295,7 +298,7 @@ void MainWindow::processData(QString resource, QByteArray data)
         table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Summa"));
         table_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tyyppi"));
 
-        foreach (const QJsonValue &value, json_array) {
+        /*foreach (const QJsonValue &value, json_array) {
             QJsonObject jsonObj = value.toObject();
 
             QString date = jsonObj["dateTime"].toString();
@@ -310,6 +313,20 @@ void MainWindow::processData(QString resource, QByteArray data)
             table_model->setItem(row, 2, Summa);
             QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
             table_model->setItem(row, 3, Tyyppi);
+        }*/
+        for(int row = 0;row<json_array.size();row++){
+            QJsonValue value = json_array.at(row);
+            QJsonObject jsonObj = value.toObject();
+
+            QString date = jsonObj["dateTime"].toString();
+            date.replace("-","/").replace("T"," ").chop(5);
+
+            QStandardItem *Aikaleima = new QStandardItem(date);
+            table_model->setItem(row, 0, Aikaleima);
+            QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
+            table_model->setItem(row, 1, Summa);
+            QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
+            table_model->setItem(row, 2, Tyyppi);
         }
         ui->tableView->setModel(table_model);
     }
