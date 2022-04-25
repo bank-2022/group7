@@ -25,10 +25,26 @@ public:
     ~MainWindow();
 
     enum states{
-        kirjaudu,
+        eiKirjautunut,
+        kirjautunut,
+    };
+
+    enum events{
+        korttiSyotetty,
+        pinSyotetty,
+        pinVaarin,
+        pinOikein,
+        naytaEtusivu,
         nosto,
         talletus,
-        tilisiirto
+        tilisiirto,
+        tilitapahtumat,
+        naytaTiedot,
+        kirjauduUlos,
+
+
+        muuSumma,
+        muuSummaSyotetty,
     };
 
     enum pages{
@@ -36,7 +52,7 @@ public:
         kirjauduPage,
         mainPage,
         nostoPage,
-        naytatiedotPage,
+        tiedotPage,
         talletusPage,
         tilitapahtumaPage,
         tilisiirtoPage
@@ -45,7 +61,6 @@ public:
 private slots:
     void processData(QString, QByteArray);
     void on_syotaPin_clicked();
-    void on_kirjaudu_clicked();
     void on_tilitapahtumat_clicked();
     void on_nosto_clicked();
     void on_talletus_clicked();
@@ -58,10 +73,9 @@ private slots:
     void on_summa100_clicked();
     void on_summa500_clicked();
     void on_summaMuu_clicked();
-    void summaHandler(QString, states);
+    void summaHandler(QString, events);
     void on_naytaTiedot_clicked();
-    void getRfid(QString id);
-    void numpadHandler(QString);
+    void numpadEnter_clicked();
     void on_showNumpad_clicked();
 
 signals:
@@ -70,20 +84,23 @@ signals:
     void requestGet(QString, QByteArray);
     void requestPut(QString, QByteArray, QJsonObject);
     void login();
-    void muuSumma(QString, states);
 
 private:
     Ui::MainWindow *ui;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
     QString kortinnro;
-    QString num;
     QByteArray webToken;
     numpad_ui *objNumPad;
     QString nimi, osoite, puhnro, tilinro, saldo;
 
     states state;
+    events event;
 
+    void runStateMachine(states, events);
+    void eiKirjautunutHandler(events);
+    void kirjautunutHandler(events);
+    void pageHandler(pages, bool, bool, QString);
 
 };
 #endif // MAINWINDOW_H
