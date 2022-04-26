@@ -288,32 +288,15 @@ void MainWindow::processData(QString resource, QByteArray data)
         qDebug()<<saldo;
         qDebug()<<tilinro;
 
-    } else if (resource == "tilitapahtuma/"){ //kortin vai tilin perusteella?
+    } else if (resource == "tilitapahtuma/tilinumero/" + tilinro){ //kortin vai tilin perusteella?
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonArray json_array = jsonDoc.array();
 
-        QStandardItemModel *table_model = new QStandardItemModel(10,4);
-        table_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Tilinumero"));
-        table_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Aikaleima"));
-        table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Summa"));
-        table_model->setHeaderData(3, Qt::Horizontal, QObject::tr("Tyyppi"));
+        QStandardItemModel *table_model = new QStandardItemModel(10,3);
+        table_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Aikaleima"));
+        table_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Summa"));
+        table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Tyyppi"));
 
-        /*foreach (const QJsonValue &value, json_array) {
-            QJsonObject jsonObj = value.toObject();
-
-            QString date = jsonObj["dateTime"].toString();
-            date.replace("-","/").replace("T"," ").chop(5);
-
-            int row = jsonObj["idTilitapahtuma"].toInt() - 1;
-            QStandardItem *Tilinumero = new QStandardItem(jsonObj["idTilinumero"].toString());
-            table_model->setItem(row, 0, Tilinumero);
-            QStandardItem *Aikaleima = new QStandardItem(date);
-            table_model->setItem(row, 1, Aikaleima);
-            QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
-            table_model->setItem(row, 2, Summa);
-            QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
-            table_model->setItem(row, 3, Tyyppi);
-        }*/
         for(int row = 0;row<json_array.size();row++){
             QJsonValue value = json_array.at(row);
             QJsonObject jsonObj = value.toObject();
