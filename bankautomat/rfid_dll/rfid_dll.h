@@ -23,7 +23,7 @@ private slots:
     void readId();
 
 signals:
-    void sendId(QString);
+    void readEvent();
 };
 
 #endif // RFID_DLL_H
