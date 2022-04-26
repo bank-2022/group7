@@ -24,9 +24,10 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    enum states{
-        eiKirjautunut,
-        kirjautunut,
+    enum rahaliikenne{
+        nosta,
+        talleta,
+        siirra
     };
 
     enum events{
@@ -38,9 +39,14 @@ public:
         nosto,
         talletus,
         tilisiirto,
-        tilitapahtumat,
-        naytaTiedot,
+        tilinumero,
+        tilinumeroSyotetty,
+        haeTilitapahtumat,
+        naytaTilitapahtumat,
+        kayttajatiedot,
         kirjauduUlos,
+        suomi,
+        ruotsi,
 
 
         muuSumma,
@@ -66,17 +72,18 @@ private slots:
     void on_talletus_clicked();
     void on_tilisiirto_clicked();
     void on_kirjauduUlos_clicked();
-    void loginHandler();
+
     void on_summa10_clicked();
     void on_summa20_clicked();
     void on_summa50_clicked();
     void on_summa100_clicked();
     void on_summa500_clicked();
     void on_summaMuu_clicked();
-    void summaHandler(QString, events);
+
     void on_naytaTiedot_clicked();
     void numpadEnter_clicked();
     void on_showNumpad_clicked();
+    void on_syotaTilinumero_clicked();
 
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
@@ -85,22 +92,29 @@ signals:
     void requestPut(QString, QByteArray, QJsonObject);
     void login();
 
+protected:
+    void closeEvent(QCloseEvent *event) override;
+
 private:
     Ui::MainWindow *ui;
+    numpad_ui *objNumPad;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
+
     QString kortinnro;
     QByteArray webToken;
-    numpad_ui *objNumPad;
-    QString nimi, osoite, puhnro, tilinro, saldo;
 
-    states state;
+    QString nimi, osoite, puhnro, tilinro, saldo;
+    QString rcvTilinro;
+
+    rahaliikenne toimenpide;
     events event;
 
-    void runStateMachine(states, events);
-    void eiKirjautunutHandler(events);
-    void kirjautunutHandler(events);
+    void loginHandler();
+    void kirjautumisHandler(events);
+    void loggedInHandler(events);
     void pageHandler(pages, bool, bool, QString);
+    void summaHandler(QString, rahaliikenne);
 
 };
 #endif // MAINWINDOW_H

@@ -22,8 +22,6 @@ MainWindow::MainWindow(QWidget *parent)
     hView = ui->tableView->horizontalHeader();
     hView->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-    ui->stackedWidget->setCurrentIndex(0);
-
     ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
 
@@ -39,9 +37,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(this, &MainWindow::requestPut,
             objRestApi, &Rest_api::sendPut);
 
-    connect(this, &MainWindow::login,
-            this, &MainWindow::loginHandler);
-
     connect(objRestApi, &Rest_api::returnData,
             this, &MainWindow::processData);
 
@@ -50,8 +45,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(oRfid, &Rfid_dll::readEvent,
             this, &MainWindow::on_syotaPin_clicked);
-
-    state = eiKirjautunut;
 }
 
 MainWindow::~MainWindow()
@@ -65,22 +58,16 @@ MainWindow::~MainWindow()
     objNumPad = nullptr;
 }
 
-
-void MainWindow::runStateMachine(states s, events e)
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    switch(s) {
-    case eiKirjautunut:
-        eiKirjautunutHandler(e);
-        break;
-    case kirjautunut:
-        kirjautunutHandler(e);
-        break;
-    }
+    objNumPad->close();
+    event->accept();
 }
 
-void MainWindow::eiKirjautunutHandler(events e)
+void MainWindow::kirjautumisHandler(events e)
 {
     if (e == korttiSyotetty){
+        event = korttiSyotetty;
         ui->stackedWidget->setCurrentIndex(kirjauduPage);
         objNumPad->stringSizeLimiter(true, 4);
         objNumPad->censorInput(true);
@@ -88,11 +75,12 @@ void MainWindow::eiKirjautunutHandler(events e)
 
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
-        ui->idKortti->setText(kortinnro);
+
         ui->kirjautumisLabel->clear();
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
+        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -105,51 +93,58 @@ void MainWindow::eiKirjautunutHandler(events e)
         objNumPad->close();
         QString resource = "kortti/asiakasjatili/" + kortinnro;
         emit requestGet(resource, webToken);
-        runStateMachine(kirjautunut, naytaEtusivu);
+    } else if (e == kirjauduUlos){
+        pageHandler(tervetuloaPage, false, false, "");
+        webToken.clear();
     }
 }
 
 void MainWindow::loginHandler()
 {
     if(webToken == "false") {
-        runStateMachine(state, pinVaarin);
+        kirjautumisHandler(pinVaarin);
     } else {
-        runStateMachine(state, pinOikein);
+        kirjautumisHandler(pinOikein);
     }
 }
 
-void MainWindow::kirjautunutHandler(events e)
+void MainWindow::loggedInHandler(events e)
 {
     if (e == naytaEtusivu){
-        state = kirjautunut;
-        pageHandler(mainPage, true, false, "Terve" + nimi);
+        pageHandler(mainPage, true, false, "Terve, " + nimi);
     } else if (e == nosto){
-        event = nosto;
+        toimenpide = nosta;
         pageHandler(nostoPage, true, true, "Nosto");
     } else if (e == talletus){
-        event = talletus;
+        toimenpide = talleta;
         pageHandler(talletusPage, true, true, "Talletus");
     } else if (e == tilisiirto){
-        event = tilisiirto;
+        toimenpide = siirra;
         pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
-    } else if (e == tilitapahtumat){
-        QString resource = "tilitapahtuma/tilinumero/" + tilinro; //kortin vai tilin perusteella?
-        qDebug()<<resource;
-        emit requestGet(resource, webToken);
-        pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
-    } else if (e == naytaTiedot){
-        pageHandler(tiedotPage, true, false, "Tietosi");
+    } else if (e == tilinumero){
+        event = tilinumero;
+        objNumPad->stringSizeLimiter(false, 0);
+        objNumPad->censorInput(false);
+        objNumPad->show();
+    } else if (e == tilinumeroSyotetty){
+        rcvTilinro = objNumPad->returnNum();
+        objNumPad->close();
     } else if (e == muuSumma){
+        event = muuSumma;
         objNumPad->stringSizeLimiter(false, 0);
         objNumPad->censorInput(false);
         objNumPad->show();
     } else if (e == muuSummaSyotetty){
         QString summa = objNumPad->returnNum();
-        summaHandler(summa, event);
-    } else if (e == kirjauduUlos){
-        state = eiKirjautunut;
-        pageHandler(tervetuloaPage, false, false, "");
-        webToken.clear();
+        summaHandler(summa, toimenpide);
+        objNumPad->close();
+    } else if (e == haeTilitapahtumat){
+        QString resource = "tilitapahtuma/tilinumero/" + tilinro;
+        emit requestGet(resource, webToken);
+    } else if (e == naytaTilitapahtumat){
+        pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
+    } else if (e == kayttajatiedot){
+        pageHandler(tiedotPage, true, false, "Tietosi");
     }
 }
 
@@ -163,102 +158,109 @@ void MainWindow::pageHandler(pages sivu, bool valikko, bool summat, QString teks
 
 void MainWindow::on_syotaPin_clicked()
 {
-    runStateMachine(state, korttiSyotetty);
+    kirjautumisHandler(korttiSyotetty);
 }
 
 void MainWindow::numpadEnter_clicked()
 {
-    if (state == eiKirjautunut){
-        runStateMachine(state, pinSyotetty);
-    } else if (state == kirjautunut){
-        runStateMachine(state, muuSummaSyotetty);
+    if (event == korttiSyotetty){
+        kirjautumisHandler(pinSyotetty);
+    } else if (event == muuSumma){
+        loggedInHandler(muuSummaSyotetty);
+    } else if (event == tilinumero){
+        loggedInHandler(tilinumeroSyotetty);
     }
 }
 
 void MainWindow::on_nosto_clicked()
 {
-    runStateMachine(state, nosto);
+    loggedInHandler(nosto);
 }
 
 void MainWindow::on_talletus_clicked()
 {
-    runStateMachine(state, talletus);
+    loggedInHandler(talletus);
 }
 
 void MainWindow::on_tilisiirto_clicked()
 {
-    runStateMachine(state, tilisiirto);
+    loggedInHandler(tilisiirto);
+}
+
+void MainWindow::on_syotaTilinumero_clicked()
+{
+    loggedInHandler(tilinumero);
 }
 
 void MainWindow::on_tilitapahtumat_clicked()
 {
-    runStateMachine(state, tilitapahtumat);
+    loggedInHandler(haeTilitapahtumat);
 }
 
 void MainWindow::on_naytaTiedot_clicked()
 {
-    runStateMachine(state, naytaTiedot);
+    loggedInHandler(kayttajatiedot);
 }
 
 void MainWindow::on_kirjauduUlos_clicked()
 {
-    runStateMachine(state, kirjauduUlos);
+    kirjautumisHandler(kirjauduUlos);
 }
 
 void MainWindow::on_summa10_clicked()
 {
-    summaHandler("10", event);
+    summaHandler("10", toimenpide);
 }
 
 void MainWindow::on_summa20_clicked()
 {
-    summaHandler("20", event);
+    summaHandler("20", toimenpide);
 }
 
 void MainWindow::on_summa50_clicked()
 {
-    summaHandler("50", event);
+    summaHandler("50", toimenpide);
 }
 
 void MainWindow::on_summa100_clicked()
 {
-    summaHandler("100", event);
+    summaHandler("100", toimenpide);
 }
 
 void MainWindow::on_summa500_clicked()
 {
-    summaHandler("500", event);
+    summaHandler("500", toimenpide);
 }
 
 void MainWindow::on_summaMuu_clicked()
 {
-    runStateMachine(state, muuSumma);
+    loggedInHandler(muuSumma);
 }
 
-void MainWindow::summaHandler(QString summa, events e)
+void MainWindow::summaHandler(QString summa, rahaliikenne toimenpide)
 {
     QString resource;
     QJsonObject jsonObj;
-    QString receiverTilinro = "Tili_2";
 
-    if(e == nosto){
+    if(toimenpide == nosta){
         resource = "proseduuri/nosto";
         jsonObj.insert("kortinnro", kortinnro);
         jsonObj.insert("tilinro", tilinro);
         jsonObj.insert("rahasumma", summa);
-    } else if(e == talletus){
+    } else if(toimenpide == talleta){
         resource = "proseduuri/talletus";
         jsonObj.insert("kortinnro", kortinnro);
         jsonObj.insert("tilinro", tilinro);
         jsonObj.insert("rahasumma", summa);
-    } else if(e == tilisiirto){
+    } else if(toimenpide == siirra){
         resource = "proseduuri/tilisiirto";
         jsonObj.insert("kortinnro", kortinnro);
         jsonObj.insert("sendertilinro", tilinro);
-        jsonObj.insert("receivertilinro", receiverTilinro);
+        jsonObj.insert("receivertilinro", rcvTilinro);
         jsonObj.insert("rahasumma", summa);
     }
     qDebug()<<jsonObj;
+    rcvTilinro = "";
     emit requestPost(resource, webToken, jsonObj);
 }
 
@@ -272,6 +274,7 @@ void MainWindow::processData(QString resource, QByteArray data)
     if (resource == "login"){
         webToken = data;
         emit login();
+        loginHandler();
     } else if (resource == "kortti/asiakasjatili/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonObject jsonObj = jsonDoc.object();
@@ -288,7 +291,9 @@ void MainWindow::processData(QString resource, QByteArray data)
         qDebug()<<saldo;
         qDebug()<<tilinro;
 
-    } else if (resource == "tilitapahtuma/tilinumero/" + tilinro){ //kortin vai tilin perusteella?
+        loggedInHandler(naytaEtusivu);
+
+    } else if (resource == "tilitapahtuma/tilinumero/" + tilinro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonArray json_array = jsonDoc.array();
 
@@ -312,6 +317,7 @@ void MainWindow::processData(QString resource, QByteArray data)
             table_model->setItem(row, 2, Tyyppi);
         }
         ui->tableView->setModel(table_model);
+        loggedInHandler(naytaTilitapahtumat);
     }
 }
 
