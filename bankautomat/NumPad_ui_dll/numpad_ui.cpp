@@ -52,9 +52,14 @@ void numpad_ui::censorInput(bool isCensored)
     }
 }
 
+QString numpad_ui::returnNum()
+{
+    return num;
+}
+
 void numpad_ui::on_btnEnter_clicked()
 {
-    emit returnNum(num);
+    emit numpadEnterClicked();
     ui->lineEdit->clear();
     num.clear();
 

@@ -21,7 +21,10 @@ Rfid_dll::~Rfid_dll()
 void Rfid_dll::readId()
 {
     id = serial->readAll();
-    emit sendId(id);
+    emit readEvent();
 }
 
-
+QString Rfid_dll::returnId()
+{
+    return id;
+}

@@ -22,6 +22,7 @@ public:
 
     void stringSizeLimiter(bool, int);
     void censorInput(bool);
+    QString returnNum();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -57,7 +58,7 @@ private:
     bool limitCondition;
     int maxLength;
 signals:
-     void returnNum(QString);
+     void numpadEnterClicked();
 };
 
 #endif // NUMPAD_UI_H
