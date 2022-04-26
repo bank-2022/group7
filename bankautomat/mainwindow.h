@@ -45,9 +45,6 @@ public:
         naytaTilitapahtumat,
         kayttajatiedot,
         kirjauduUlos,
-        suomi,
-        ruotsi,
-
 
         muuSumma,
         muuSummaSyotetty,
@@ -85,6 +82,10 @@ private slots:
     void on_showNumpad_clicked();
     void on_syotaTilinumero_clicked();
 
+    void kylla_clicked();
+    void ei_clicked();
+    void NostaTalletaSiirra_clicked();
+
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
@@ -110,11 +111,15 @@ private:
     rahaliikenne toimenpide;
     events event;
 
+    QString summa;
+
     void loginHandler();
     void kirjautumisHandler(events);
     void loggedInHandler(events);
     void pageHandler(pages, bool, bool, QString);
-    void summaHandler(QString, rahaliikenne);
+    void rahaliikenneHandler();
+    void summaButtonsHandler();
+    void tilinumeroHandler();
 
 };
 #endif // MAINWINDOW_H
