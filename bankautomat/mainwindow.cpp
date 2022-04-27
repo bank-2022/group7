@@ -21,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //Tableviewin asetukset
     QHeaderView *hView;
-    hView = ui->tableView->horizontalHeader();
+    hView = ui->tilitapahtumaView->horizontalHeader();
     hView->setSectionResizeMode(QHeaderView::ResizeToContents);
 
     ui->summatWidget->setVisible(false);
@@ -417,7 +417,7 @@ void MainWindow::processData(QString resource, QByteArray data)
         osoite = jsonObj["osoite"].toString();
         puhnro = jsonObj["puhelinnumero"].toString();
         tilinro = jsonObj["idTilinumero"].toString();
-        saldo = QString::number(jsonObj["saldo"].toDouble()); //ei näy oikein
+        saldo = QString::number(jsonObj["saldo"].toDouble(),'f',0); //ei näy oikein
 
         loggedInHandler(naytaEtusivu);
 
@@ -425,10 +425,10 @@ void MainWindow::processData(QString resource, QByteArray data)
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonArray json_array = jsonDoc.array();
 
-        QStandardItemModel *table_model = new QStandardItemModel(10,3);
-        table_model->setHeaderData(0, Qt::Horizontal, QObject::tr("Aikaleima"));
-        table_model->setHeaderData(1, Qt::Horizontal, QObject::tr("Summa"));
-        table_model->setHeaderData(2, Qt::Horizontal, QObject::tr("Tyyppi"));
+        QStandardItemModel *tilitapahtumaModel = new QStandardItemModel(10,3);
+        tilitapahtumaModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Aikaleima"));
+        tilitapahtumaModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Summa"));
+        tilitapahtumaModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Tyyppi"));
 
         for(int row = 0;row<json_array.size();row++){
             QJsonValue value = json_array.at(row);
@@ -438,13 +438,13 @@ void MainWindow::processData(QString resource, QByteArray data)
             date.replace("-","/").replace("T"," ").chop(5);
 
             QStandardItem *Aikaleima = new QStandardItem(date);
-            table_model->setItem(row, 0, Aikaleima);
+            tilitapahtumaModel->setItem(row, 0, Aikaleima);
             QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
-            table_model->setItem(row, 1, Summa);
+            tilitapahtumaModel->setItem(row, 1, Summa);
             QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
-            table_model->setItem(row, 2, Tyyppi);
+            tilitapahtumaModel->setItem(row, 2, Tyyppi);
         }
-        ui->tableView->setModel(table_model);
+        ui->tilitapahtumaView->setModel(tilitapahtumaModel);
         loggedInHandler(naytaTilitapahtumat);
     }
 }

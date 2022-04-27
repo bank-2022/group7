@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>8</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -278,7 +278,7 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
     <widget class="QWidget" name="tilitapahtumaPage">
-     <widget class="QTableView" name="tableView">
+     <widget class="QTableView" name="tilitapahtumaView">
       <property name="geometry">
        <rect>
         <x>130</x>
