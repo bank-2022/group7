@@ -47,8 +47,6 @@ public:
         kirjauduUlos,
         suomi,
         ruotsi,
-
-
         muuSumma,
         muuSummaSyotetty,
     };
@@ -106,6 +104,7 @@ private:
 
     QString nimi, osoite, puhnro, tilinro, saldo;
     QString rcvTilinro;
+    int loginAttempts;
 
     rahaliikenne toimenpide;
     events event;
