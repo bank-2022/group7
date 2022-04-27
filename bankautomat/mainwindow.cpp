@@ -113,6 +113,9 @@ void MainWindow::kirjautumisHandler(events e)
             this->lukitutKortitCheck();
             ui->stackedWidget->setCurrentIndex(kirjauduPage);
 
+            ui->kirjautumisLabel->clear();
+            //qDebug()<<kortinnro;
+
             objNumPad->stringSizeLimiter(true, 4);
             objNumPad->censorInput(true);
             objNumPad->show();
@@ -123,7 +126,7 @@ void MainWindow::kirjautumisHandler(events e)
         }
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -135,7 +138,7 @@ void MainWindow::kirjautumisHandler(events e)
         loginAttempts++;
         qDebug()<<loginAttempts;
         if(loginAttempts == 3){
-           kirjautumisHandler(korttiLukittu);
+            kirjautumisHandler(korttiLukittu);
         }
     } else if (e == pinOikein){
         objNumPad->close();
@@ -147,8 +150,8 @@ void MainWindow::kirjautumisHandler(events e)
         ajastin->start(2000);
         objNumPad->close();
         if(this->lukitutKortitCheck()==false){
-           qDebug()<<kortinnro + " lisätty lukittujen listaan";
-           lukitutKortit.append(kortinnro);
+            qDebug()<<kortinnro + " lisätty lukittujen listaan";
+            lukitutKortit.append(kortinnro);
         }
         pageHandler(pinLukittuPage,false,false,"");
 
@@ -176,12 +179,22 @@ void MainWindow::loggedInHandler(events e)
         pageHandler(mainPage, true, false, "Terve, " + nimi);
     } else if (e == nosto){
         toimenpide = nosta;
+        ui->nostoPageStackedWidget->setVisible(false);
+        ui->nostoLabel->clear();
+        summa.clear();
         pageHandler(nostoPage, true, true, "Nosto");
     } else if (e == talletus){
         toimenpide = talleta;
+        ui->talletusPageStackedWidget->setVisible(false);
+        ui->talletusLabel->clear();
+        summa.clear();
         pageHandler(talletusPage, true, true, "Talletus");
     } else if (e == tilisiirto){
         toimenpide = siirra;
+        ui->siirtoPageStackedWidget->setVisible(false);
+        ui->siirtoLabel->clear();
+        summa.clear();
+        rcvTilinro.clear();
         pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
     } else if (e == haeTilitapahtumat){
         QString resource = "tilitapahtuma/tilinumero/" + tilinro;
@@ -249,30 +262,35 @@ void MainWindow::on_kirjauduUlos_clicked()
 
 void MainWindow::on_summa10_clicked()
 {
+    event = summaClicked;
     summa = "10";
     summaButtonsHandler();
 }
 
 void MainWindow::on_summa20_clicked()
 {
+    event = summaClicked;
     summa = "20";
     summaButtonsHandler();
 }
 
 void MainWindow::on_summa50_clicked()
 {
+    event = summaClicked;
     summa = "50";
     summaButtonsHandler();
 }
 
 void MainWindow::on_summa100_clicked()
 {
+    event = summaClicked;
     summa = "100";
     summaButtonsHandler();
 }
 
 void MainWindow::on_summa500_clicked()
 {
+    event = summaClicked;
     summa = "500";
     summaButtonsHandler();
 }
@@ -322,19 +340,18 @@ void MainWindow::summaButtonsHandler()
         summa = objNumPad->returnNum();
         qDebug()<<summa;
     }
-
     objNumPad->close();
 
     if(toimenpide == nosta){
-        ui->nostoLabel->setText("Summa syötetty");
+        ui->nostoLabel->setText("Summa <b>" + summa + "</b> syötetty");
         ui->nostoPageStackedWidget->setVisible(true);
         ui->nostoPageStackedWidget->setCurrentIndex(0);
     } else if(toimenpide == talleta){
-        ui->talletusLabel->setText("Summa syötetty");
+        ui->talletusLabel->setText("Summa <b>" + summa + "</b> syötetty");
         ui->talletusPageStackedWidget->setVisible(true);
         ui->talletusPageStackedWidget->setCurrentIndex(0);
     } else if(toimenpide == siirra){
-        ui->siirtoLabel->setText("Summa syötetty\nSyötä tilinumero");
+        ui->siirtoLabel->setText("Summa <b>" + summa + "</b> syötetty <br> Syötä tilinumero");
         ui->siirtoPageStackedWidget->setVisible(true);
         ui->siirtoPageStackedWidget->setCurrentIndex(2);
     }
@@ -343,8 +360,8 @@ void MainWindow::summaButtonsHandler()
 void MainWindow::NostaTalletaSiirra_clicked()
 {
     if(toimenpide == nosta){
-        ui->nostoLabel->setText("Haluatko varmasti nostaa <b>" + summa + "</b> rahaa?");
         ui->nostoPageStackedWidget->setCurrentIndex(1);
+        ui->nostoLabel->setText("Haluatko varmasti nostaa <b>" + summa + "</b> rahaa?");
     } else if(toimenpide == talleta){
         ui->talletusPageStackedWidget->setCurrentIndex(1);
         ui->talletusLabel->setText("Haluatko varmasti tallettaa <b>" + summa + "</b> rahaa?");
@@ -356,6 +373,17 @@ void MainWindow::NostaTalletaSiirra_clicked()
 
 void MainWindow::kylla_clicked()
 {
+    if(toimenpide == nosta){
+        ui->nostoLabel->setText("Nosto onnistui!");
+        ui->nostoPageStackedWidget->setVisible(false);
+    } else if(toimenpide == talleta){
+        ui->talletusLabel->setText("Talletus onnistui!");
+        ui->talletusPageStackedWidget->setVisible(false);
+    } else if(toimenpide == siirra){
+        ui->siirtoLabel->setText("Tilisiirto onnistui!");
+        ui->siirtoPageStackedWidget->setVisible(false);
+    }
+
     rahaliikenneHandler();
 }
 
@@ -367,7 +395,8 @@ void MainWindow::ei_clicked()
     ui->nostoLabel->clear();
     ui->talletusLabel->clear();
     ui->siirtoLabel->clear();
-    summa = "";
+    summa.clear();
+    rcvTilinro.clear();
 }
 
 void MainWindow::rahaliikenneHandler()
@@ -393,7 +422,8 @@ void MainWindow::rahaliikenneHandler()
         jsonObj.insert("rahasumma", summa);
     }
     qDebug()<<jsonObj;
-    rcvTilinro = "";
+    rcvTilinro.clear();
+    summa.clear();
     emit requestPost(resource, webToken, jsonObj);
 }
 
