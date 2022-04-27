@@ -138,9 +138,9 @@ void MainWindow::kirjautumisHandler(events e)
         emit requestGet(resource, webToken);
 
     } else if (e == pinLukittu){
+        ajastin->start(5000);
         objNumPad->close();
         pageHandler(pinLukittuPage,false,false,"");
-        this->pinVaarinTimeout();
 
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, "");
@@ -370,12 +370,6 @@ void MainWindow::rahaliikenneHandler()
     qDebug()<<jsonObj;
     rcvTilinro = "";
     emit requestPost(resource, webToken, jsonObj);
-}
-
-void MainWindow::pinVaarinTimeout()
-{
-    qDebug()<<"PinTimeOut";
-    ajastin->start(5000);
 }
 
 void MainWindow::on_showNumpad_clicked()
