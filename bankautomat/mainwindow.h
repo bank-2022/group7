@@ -119,6 +119,9 @@ private:
     void pageHandler(pages, bool, bool, QString);
     void summaHandler(QString, rahaliikenne);
     void pinVaarinTimeout();
+    void rahaliikenneHandler();
+    void summaButtonsHandler();
+    void tilinumeroHandler();
 
 };
 #endif // MAINWINDOW_H
