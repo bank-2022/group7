@@ -12,6 +12,7 @@
 #include <QStandardItemModel>
 #include <QHeaderView>
 #include <QTimer>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,7 +37,7 @@ public:
         pinSyotetty,
         pinVaarin,
         pinOikein,
-        pinLukittu,
+        korttiLukittu,
         naytaEtusivu,
         nosto,
         talletus,
@@ -115,6 +116,7 @@ private:
     events event;
 
     QString summa;
+    QVector<QString> lukitutKortit;
 
     void loginHandler();
     void kirjautumisHandler(events);
@@ -124,6 +126,6 @@ private:
     void rahaliikenneHandler();
     void summaButtonsHandler();
     void tilinumeroHandler();
-
+    bool lukitutKortitCheck();
 };
 #endif // MAINWINDOW_H
