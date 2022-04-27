@@ -38,6 +38,7 @@ public:
         pinVaarin,
         pinOikein,
         korttiLukittu,
+        haeSaldoEtusivulle,
         naytaEtusivu,
         nosto,
         talletus,
@@ -87,6 +88,8 @@ private slots:
     void kylla_clicked();
     void ei_clicked();
     void NostaTalletaSiirra_clicked();
+
+    void on_etusivu_clicked();
 
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);

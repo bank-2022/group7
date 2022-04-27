@@ -80,6 +80,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->siirraButton, &QAbstractButton::clicked,
             this, &MainWindow::NostaTalletaSiirra_clicked);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -104,8 +106,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::kirjautumisHandler(events e)
 {
     if (e == korttiSyotetty){
+
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
+
+        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         if(this->lukitutKortitCheck() == true){
             kirjautumisHandler(korttiLukittu);
         } else{
@@ -126,7 +131,6 @@ void MainWindow::kirjautumisHandler(events e)
         }
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -175,7 +179,11 @@ void MainWindow::loginHandler()
 
 void MainWindow::loggedInHandler(events e)
 {
-    if (e == naytaEtusivu){
+    if (e == haeSaldoEtusivulle){
+        QString resource = "tili/saldo/" + tilinro;
+        emit requestGet(resource, webToken);
+    } else if (e == naytaEtusivu){
+        ui->saldoLCD->display(saldo);
         pageHandler(mainPage, true, false, "Terve, " + nimi);
     } else if (e == nosto){
         toimenpide = nosta;
@@ -228,6 +236,11 @@ void MainWindow::numpadEnter_clicked()
     } else if (event == tilinumero){
         tilinumeroHandler();
     }
+}
+
+void MainWindow::on_etusivu_clicked()
+{
+    loggedInHandler(haeSaldoEtusivulle);
 }
 
 void MainWindow::on_nosto_clicked()
@@ -389,14 +402,13 @@ void MainWindow::kylla_clicked()
 
 void MainWindow::ei_clicked()
 {
-    ui->nostoPageStackedWidget->setVisible(false);
-    ui->talletusPageStackedWidget->setVisible(false);
-    ui->siirtoPageStackedWidget->setVisible(false);
-    ui->nostoLabel->clear();
-    ui->talletusLabel->clear();
-    ui->siirtoLabel->clear();
-    summa.clear();
-    rcvTilinro.clear();
+    if(toimenpide == nosta){
+        loggedInHandler(nosto);
+    } else if(toimenpide == talleta){
+        loggedInHandler(talletus);
+    } else if(toimenpide == siirra){
+        loggedInHandler(tilisiirto);
+    }
 }
 
 void MainWindow::rahaliikenneHandler()
@@ -447,7 +459,14 @@ void MainWindow::processData(QString resource, QByteArray data)
         osoite = jsonObj["osoite"].toString();
         puhnro = jsonObj["puhelinnumero"].toString();
         tilinro = jsonObj["idTilinumero"].toString();
-        saldo = QString::number(jsonObj["saldo"].toDouble()); //ei näy oikein
+        saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0); //ei näy oikein
+
+        loggedInHandler(naytaEtusivu);
+
+    } else if (resource == "tili/saldo/" + tilinro){
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+        saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0);
 
         loggedInHandler(naytaEtusivu);
 
@@ -478,5 +497,8 @@ void MainWindow::processData(QString resource, QByteArray data)
         loggedInHandler(naytaTilitapahtumat);
     }
 }
+
+
+
 
 

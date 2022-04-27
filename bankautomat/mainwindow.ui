@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -501,6 +501,13 @@ p, li { white-space: pre-wrap; }
       <property name="sizeConstraint">
        <enum>QLayout::SetNoConstraint</enum>
       </property>
+      <item>
+       <widget class="QPushButton" name="etusivu">
+        <property name="text">
+         <string>Etusivu</string>
+        </property>
+       </widget>
+      </item>
       <item>
        <widget class="QPushButton" name="nosto">
         <property name="text">
