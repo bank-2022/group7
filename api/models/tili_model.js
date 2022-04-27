@@ -5,7 +5,10 @@ const tili = {
     return db.query('select * from tili', callback);
   },
   getByTilinumero: function(id, callback) {
-      return db.query('select * from tili where idTilinumero = ?', [id], callback);
+    return db.query('select * from tili where idTilinumero = ?', [id], callback);
+  },
+  getSaldo(id, callback) {
+    return db.query('select saldo from tili where idTilinumero = ?', [id], callback);
   },
   add: function(tili, callback) {
     return db.query(

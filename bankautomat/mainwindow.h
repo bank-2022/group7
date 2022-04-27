@@ -11,6 +11,8 @@
 #include <QSerialPort>
 #include <QStandardItemModel>
 #include <QHeaderView>
+#include <QTimer>
+#include <QVector>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,22 +37,19 @@ public:
         pinSyotetty,
         pinVaarin,
         pinOikein,
+        korttiLukittu,
+        haeSaldoEtusivulle,
         naytaEtusivu,
         nosto,
         talletus,
         tilisiirto,
         tilinumero,
-        tilinumeroSyotetty,
         haeTilitapahtumat,
         naytaTilitapahtumat,
         kayttajatiedot,
         kirjauduUlos,
-        suomi,
-        ruotsi,
-
-
         muuSumma,
-        muuSummaSyotetty,
+        summaClicked,
     };
 
     enum pages{
@@ -61,7 +60,8 @@ public:
         tiedotPage,
         talletusPage,
         tilitapahtumaPage,
-        tilisiirtoPage
+        tilisiirtoPage,
+        pinLukittuPage,
     };
 
 private slots:
@@ -85,6 +85,12 @@ private slots:
     void on_showNumpad_clicked();
     void on_syotaTilinumero_clicked();
 
+    void kylla_clicked();
+    void ei_clicked();
+    void NostaTalletaSiirra_clicked();
+
+    void on_etusivu_clicked();
+
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
@@ -100,21 +106,29 @@ private:
     numpad_ui *objNumPad;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
+    QTimer *ajastin;
 
     QString kortinnro;
     QByteArray webToken;
 
     QString nimi, osoite, puhnro, tilinro, saldo;
     QString rcvTilinro;
+    int loginAttempts;
 
     rahaliikenne toimenpide;
     events event;
+
+    QString summa;
+    QVector<QString> lukitutKortit;
 
     void loginHandler();
     void kirjautumisHandler(events);
     void loggedInHandler(events);
     void pageHandler(pages, bool, bool, QString);
     void summaHandler(QString, rahaliikenne);
-
+    void rahaliikenneHandler();
+    void summaButtonsHandler();
+    void tilinumeroHandler();
+    bool lukitutKortitCheck();
 };
 #endif // MAINWINDOW_H
