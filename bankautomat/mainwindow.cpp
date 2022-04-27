@@ -145,6 +145,8 @@ void MainWindow::kirjautumisHandler(events e)
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, "");
         webToken.clear();
+        ajastin->stop();
+        loginAttempts = 0;
     }
 
 }
