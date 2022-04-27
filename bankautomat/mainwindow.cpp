@@ -80,7 +80,7 @@ void MainWindow::kirjautumisHandler(events e)
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+        kortinnro = "2"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -144,7 +144,24 @@ void MainWindow::loggedInHandler(events e)
     } else if (e == naytaTilitapahtumat){
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
     } else if (e == kayttajatiedot){
+
         pageHandler(tiedotPage, true, false, "Tietosi");
+
+        ui->label_5->setStyleSheet("QLabel {background-color : black; color : white; }");
+        ui->nimiLabel->setText(nimi);
+
+
+        ui->osoiteLabel->setText(osoite);
+        ui->label_6->setStyleSheet("QLabel {background-color : black; color : white; }");
+
+
+        ui->puhnroLabel->setText(puhnro);
+        ui->label_7->setStyleSheet("QLabel {background-color : black; color : white; }");
+
+        ui->tilinroLabel->setText(tilinro);
+        ui->label_8->setStyleSheet("QLabel {background-color : black; color : white; }");
+
+        // QString nimi, osoite, puhnro, tilinro, saldo;
     }
 }
 
