@@ -24,29 +24,29 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
       <property name="geometry">
        <rect>
-        <x>280</x>
-        <y>320</y>
+        <x>270</x>
+        <y>220</y>
         <width>251</width>
         <height>141</height>
        </rect>
       </property>
       <property name="text">
-       <string>syötä</string>
+       <string>Paina avataksesi PIN -näppäimistö</string>
       </property>
      </widget>
-     <widget class="QTextBrowser" name="textBrowser">
+     <widget class="QTextBrowser" name="otsikkoLabel">
       <property name="geometry">
        <rect>
         <x>210</x>
         <y>70</y>
         <width>381</width>
-        <height>192</height>
+        <height>131</height>
        </rect>
       </property>
       <property name="html">
@@ -59,40 +59,17 @@ p, li { white-space: pre-wrap; }
      </widget>
     </widget>
     <widget class="QWidget" name="kirjauduPage">
-     <widget class="QLineEdit" name="idKortti">
-      <property name="geometry">
-       <rect>
-        <x>360</x>
-        <y>160</y>
-        <width>108</width>
-        <height>24</height>
-       </rect>
-      </property>
-     </widget>
      <widget class="QPushButton" name="kirjaudu">
       <property name="geometry">
        <rect>
         <x>370</x>
-        <y>260</y>
+        <y>250</y>
         <width>80</width>
         <height>24</height>
        </rect>
       </property>
       <property name="text">
        <string>Kirjaudu</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="kirjautumisLabel">
-      <property name="geometry">
-       <rect>
-        <x>340</x>
-        <y>300</y>
-        <width>151</width>
-        <height>61</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
       </property>
      </widget>
      <widget class="QPushButton" name="showNumpad">
@@ -105,7 +82,48 @@ p, li { white-space: pre-wrap; }
        </rect>
       </property>
       <property name="text">
-       <string>respawn numpad</string>
+       <string>Avaa PIN -näppäimistö</string>
+      </property>
+     </widget>
+     <widget class="QWidget" name="formLayoutWidget_2">
+      <property name="geometry">
+       <rect>
+        <x>250</x>
+        <y>160</y>
+        <width>291</width>
+        <height>41</height>
+       </rect>
+      </property>
+      <layout class="QFormLayout" name="formLayout_2">
+       <item row="0" column="0">
+        <widget class="QLabel" name="kortinIDLabel">
+         <property name="text">
+          <string>Kortin ID:</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="idKortti"/>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QLabel" name="kirjautumisLabel">
+      <property name="geometry">
+       <rect>
+        <x>320</x>
+        <y>90</y>
+        <width>191</width>
+        <height>51</height>
+       </rect>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
+      <property name="text">
+       <string/>
       </property>
      </widget>
     </widget>
@@ -113,21 +131,30 @@ p, li { white-space: pre-wrap; }
      <widget class="QLabel" name="saldoLabel">
       <property name="geometry">
        <rect>
-        <x>140</x>
-        <y>150</y>
+        <x>110</x>
+        <y>170</y>
         <width>171</width>
         <height>41</height>
        </rect>
       </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
+      </property>
       <property name="text">
        <string>Tilisi saldo:</string>
+      </property>
+      <property name="textFormat">
+       <enum>Qt::AutoText</enum>
       </property>
      </widget>
      <widget class="QLCDNumber" name="saldoLCD">
       <property name="geometry">
        <rect>
-        <x>130</x>
-        <y>200</y>
+        <x>290</x>
+        <y>160</y>
         <width>281</width>
         <height>61</height>
        </rect>
@@ -427,19 +454,6 @@ p, li { white-space: pre-wrap; }
       </item>
      </layout>
     </widget>
-   </widget>
-   <widget class="QLabel" name="otsikkoLabel">
-    <property name="geometry">
-     <rect>
-      <x>50</x>
-      <y>30</y>
-      <width>361</width>
-      <height>81</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-    </property>
    </widget>
   </widget>
  </widget>

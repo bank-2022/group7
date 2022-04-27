@@ -14,6 +14,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     ui->otsikkoLabel->setFont(f);
+    ui->otsikkoLabel->setText("Tervetuloa! Syötä kortti");
 
     ui->stackedWidget->setCurrentIndex(tervetuloaPage);
 
@@ -80,21 +81,28 @@ void MainWindow::kirjautumisHandler(events e)
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "2"; //kovakoodaus testaamista varten
+        kortinnro = ui->idKortti->text(); //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
         jsonObj.insert("pin", pin);
         QString resource = "login";
         emit requestLogin(resource, webToken, jsonObj);
+
     } else if (e == pinVaarin){
+        ui->kirjautumisLabel->setStyleSheet("QLabel {background-color : black; color : white}");
         ui->kirjautumisLabel->setText("PIN VÄÄRIN");
+
+      if (ui->idKortti->text().isEmpty()) {
+            ui->kirjautumisLabel->setText("Kortin ID puuttuu");
+      }
+
     } else if (e == pinOikein){
         objNumPad->close();
         QString resource = "kortti/asiakasjatili/" + kortinnro;
         emit requestGet(resource, webToken);
     } else if (e == kirjauduUlos){
-        pageHandler(tervetuloaPage, false, false, "");
+        pageHandler(tervetuloaPage, false, false, "Tervetuloa! Syötä kortti");
         webToken.clear();
     }
 }
@@ -112,6 +120,7 @@ void MainWindow::loggedInHandler(events e)
 {
     if (e == naytaEtusivu){
         pageHandler(mainPage, true, false, "Terve, " + nimi);
+        ui->saldoLabel->setStyleSheet("QLabel {background-color : black; color : white} ");
     } else if (e == nosto){
         toimenpide = nosta;
         pageHandler(nostoPage, true, true, "Nosto");
