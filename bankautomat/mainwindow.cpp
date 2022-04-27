@@ -110,7 +110,7 @@ void MainWindow::kirjautumisHandler(events e)
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
 
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+        kortinnro = ui->idKortti->text(); //kovakoodaus testaamista varten syöttäkää kortin id line edittiin
         if(this->lukitutKortitCheck() == true){
             kirjautumisHandler(korttiLukittu);
         } else{
@@ -130,7 +130,7 @@ void MainWindow::kirjautumisHandler(events e)
 
         }
     } else if (e == pinSyotetty){
-        //kortinnro = ui->idKortti->text();
+        kortinnro = ui->idKortti->text();
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -138,7 +138,9 @@ void MainWindow::kirjautumisHandler(events e)
         QString resource = "login";
         emit requestLogin(resource, webToken, jsonObj);
     } else if (e == pinVaarin){
+        ui->kirjautumisLabel->setStyleSheet("QLabel {background-color : black; color : white}");
         ui->kirjautumisLabel->setText("PIN VÄÄRIN");
+
         loginAttempts++;
         qDebug()<<loginAttempts;
         if(loginAttempts == 3){
@@ -211,6 +213,20 @@ void MainWindow::loggedInHandler(events e)
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
     } else if (e == kayttajatiedot){
         pageHandler(tiedotPage, true, false, "Tietosi");
+
+        ui->label_5->setStyleSheet("QLabel {background-color : black; color : white; }");
+         ui->nimiLabel->setText(nimi);
+
+
+         ui->osoiteLabel->setText(osoite);
+         ui->label_6->setStyleSheet("QLabel {background-color : black; color : white; }");
+
+
+         ui->puhnroLabel->setText(puhnro);
+         ui->label_7->setStyleSheet("QLabel {background-color : black; color : white; }");
+
+         ui->tilinroLabel->setText(tilinro);
+         ui->label_8->setStyleSheet("QLabel {background-color : black; color : white; }");
     }
 }
 
