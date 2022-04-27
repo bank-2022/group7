@@ -42,15 +42,12 @@ public:
         talletus,
         tilisiirto,
         tilinumero,
-        tilinumeroSyotetty,
         haeTilitapahtumat,
         naytaTilitapahtumat,
         kayttajatiedot,
         kirjauduUlos,
-        suomi,
-        ruotsi,
         muuSumma,
-        muuSummaSyotetty,
+        summaClicked,
     };
 
     enum pages{
