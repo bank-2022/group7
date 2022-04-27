@@ -7,6 +7,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    loginAttempts = 0;
 
     objRestApi = new Rest_api;
     objNumPad = new numpad_ui;
@@ -71,16 +72,17 @@ void MainWindow::kirjautumisHandler(events e)
         ui->stackedWidget->setCurrentIndex(kirjauduPage);
         objNumPad->stringSizeLimiter(true, 4);
         objNumPad->censorInput(true);
-        objNumPad->show();
+        objNumPad->show();        
 
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
 
         ui->kirjautumisLabel->clear();
+        qDebug()<<kortinnro;
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+        //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -89,9 +91,15 @@ void MainWindow::kirjautumisHandler(events e)
         emit requestLogin(resource, webToken, jsonObj);
     } else if (e == pinVaarin){
         ui->kirjautumisLabel->setText("PIN VÄÄRIN");
+        loginAttempts++;
+        qDebug()<<loginAttempts;
+        if(loginAttempts == 3){
+           qDebug()<<"Kikkeli!";
+        }
     } else if (e == pinOikein){
         objNumPad->close();
         QString resource = "kortti/asiakasjatili/" + kortinnro;
+        loginAttempts = 0;
         emit requestGet(resource, webToken);
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, "");
