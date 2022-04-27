@@ -53,8 +53,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ajastin, &QTimer::timeout,
             this, &MainWindow::on_kirjauduUlos_clicked);
-<<<<<<< HEAD
-=======
+
     connect(ui->kyllaNostaButton, &QAbstractButton::clicked,
             this, &MainWindow::kylla_clicked);
 
@@ -81,7 +80,6 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->siirraButton, &QAbstractButton::clicked,
             this, &MainWindow::NostaTalletaSiirra_clicked);
->>>>>>> 68ffafb7837a6c530b6d8883ffb3e5ca9f046285
 }
 
 MainWindow::~MainWindow()
