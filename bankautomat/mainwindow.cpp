@@ -12,6 +12,7 @@ MainWindow::MainWindow(QWidget *parent)
     objRestApi = new Rest_api;
     objNumPad = new numpad_ui;
     oRfid = new Rfid_dll;
+    ajastin = new QTimer;
 
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     ui->otsikkoLabel->setFont(f);
@@ -46,6 +47,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(oRfid, &Rfid_dll::readEvent,
             this, &MainWindow::on_syotaPin_clicked);
+
+    connect(ajastin, &QTimer::timeout,
+            this, &MainWindow::on_kirjauduUlos_clicked);
 }
 
 MainWindow::~MainWindow()
@@ -57,6 +61,8 @@ MainWindow::~MainWindow()
     oRfid = nullptr;
     delete objNumPad;
     objNumPad = nullptr;
+    delete ajastin;
+    ajastin = nullptr;
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -94,17 +100,24 @@ void MainWindow::kirjautumisHandler(events e)
         loginAttempts++;
         qDebug()<<loginAttempts;
         if(loginAttempts == 3){
-           qDebug()<<"Kikkeli!";
+           kirjautumisHandler(pinLukittu);
         }
     } else if (e == pinOikein){
         objNumPad->close();
         QString resource = "kortti/asiakasjatili/" + kortinnro;
         loginAttempts = 0;
         emit requestGet(resource, webToken);
+
+    } else if (e == pinLukittu){
+        objNumPad->close();
+        pageHandler(pinLukittuPage,false,false,"");
+        this->pinVaarinTimeout();
+
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, "");
         webToken.clear();
     }
+
 }
 
 void MainWindow::loginHandler()
@@ -270,6 +283,12 @@ void MainWindow::summaHandler(QString summa, rahaliikenne toimenpide)
     qDebug()<<jsonObj;
     rcvTilinro = "";
     emit requestPost(resource, webToken, jsonObj);
+}
+
+void MainWindow::pinVaarinTimeout()
+{
+    qDebug()<<"PinTimeOut";
+    ajastin->start(5000);
 }
 
 void MainWindow::on_showNumpad_clicked()

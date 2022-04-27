@@ -11,6 +11,7 @@
 #include <QSerialPort>
 #include <QStandardItemModel>
 #include <QHeaderView>
+#include <QTimer>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,6 +36,7 @@ public:
         pinSyotetty,
         pinVaarin,
         pinOikein,
+        pinLukittu,
         naytaEtusivu,
         nosto,
         talletus,
@@ -59,7 +61,8 @@ public:
         tiedotPage,
         talletusPage,
         tilitapahtumaPage,
-        tilisiirtoPage
+        tilisiirtoPage,
+        pinLukittuPage,
     };
 
 private slots:
@@ -98,6 +101,7 @@ private:
     numpad_ui *objNumPad;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
+    QTimer *ajastin;
 
     QString kortinnro;
     QByteArray webToken;
@@ -114,6 +118,7 @@ private:
     void loggedInHandler(events);
     void pageHandler(pages, bool, bool, QString);
     void summaHandler(QString, rahaliikenne);
+    void pinVaarinTimeout();
 
 };
 #endif // MAINWINDOW_H
