@@ -80,7 +80,7 @@ void MainWindow::kirjautumisHandler(events e)
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+       kortinnro = "2"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -145,6 +145,13 @@ void MainWindow::loggedInHandler(events e)
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
     } else if (e == kayttajatiedot){
         pageHandler(tiedotPage, true, false, "Tietosi");
+
+
+        ui->nimiLabel->setText(nimi);
+        ui->osoiteLabel->setText(osoite);
+        ui->puhnroLabel->setText(puhnro);
+        ui->tilinroLabel->setText(tilinro);
+
     }
 }
 
@@ -319,5 +326,6 @@ void MainWindow::processData(QString resource, QByteArray data)
         ui->tableView->setModel(table_model);
         loggedInHandler(naytaTilitapahtumat);
     }
+
 }
 
