@@ -104,18 +104,23 @@ void MainWindow::closeEvent(QCloseEvent *event)
 void MainWindow::kirjautumisHandler(events e)
 {
     if (e == korttiSyotetty){
-        event = korttiSyotetty;
-        ui->stackedWidget->setCurrentIndex(kirjauduPage);
-        objNumPad->stringSizeLimiter(true, 4);
-        objNumPad->censorInput(true);
-        objNumPad->show();        
-
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
+        if(this->lukitutKortitCheck() == true){
+            kirjautumisHandler(korttiLukittu);
+        } else{
+            event = korttiSyotetty;
+            this->lukitutKortitCheck();
+            ui->stackedWidget->setCurrentIndex(kirjauduPage);
 
-        ui->kirjautumisLabel->clear();
-        qDebug()<<kortinnro;
+            objNumPad->stringSizeLimiter(true, 4);
+            objNumPad->censorInput(true);
+            objNumPad->show();
 
+            ui->kirjautumisLabel->clear();
+            qDebug()<<kortinnro;
+
+        }
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
         //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
@@ -130,7 +135,7 @@ void MainWindow::kirjautumisHandler(events e)
         loginAttempts++;
         qDebug()<<loginAttempts;
         if(loginAttempts == 3){
-           kirjautumisHandler(pinLukittu);
+           kirjautumisHandler(korttiLukittu);
         }
     } else if (e == pinOikein){
         objNumPad->close();
@@ -138,9 +143,13 @@ void MainWindow::kirjautumisHandler(events e)
         loginAttempts = 0;
         emit requestGet(resource, webToken);
 
-    } else if (e == pinLukittu){
-        ajastin->start(5000);
+    } else if (e == korttiLukittu){
+        ajastin->start(2000);
         objNumPad->close();
+        if(this->lukitutKortitCheck()==false){
+           qDebug()<<kortinnro + " lisätty lukittujen listaan";
+           lukitutKortit.append(kortinnro);
+        }
         pageHandler(pinLukittuPage,false,false,"");
 
     } else if (e == kirjauduUlos){
@@ -290,6 +299,21 @@ void MainWindow::tilinumeroHandler()
     objNumPad->close();
     ui->siirtoLabel->setText("Tilinumero syötetty");
     ui->siirtoPageStackedWidget->setCurrentIndex(0);
+}
+
+bool MainWindow::lukitutKortitCheck()
+{
+    bool cardLocked;
+    for(int i = 0;i<lukitutKortit.size();i++){
+        qDebug()<<"Lukittujen korttien lista: " + lukitutKortit.value(i);
+        if(kortinnro == lukitutKortit.value(i)){
+            cardLocked = true;
+            return cardLocked;
+        }
+    }
+    cardLocked = false;
+    return cardLocked;
+
 }
 
 void MainWindow::summaButtonsHandler()
