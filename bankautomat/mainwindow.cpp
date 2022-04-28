@@ -15,18 +15,34 @@ MainWindow::MainWindow(QWidget *parent)
     ajastin = new QTimer;
 
     QFont f( "Comic Sans MS", 25, QFont::Bold);
+    QFont f2( "Comic Sans MS", 18, QFont::Bold);
     ui->paaOtsikkoLabel->setFont(f);
-    //  ui->otsikkoLabel->setFont(f); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
-    ui->paaOtsikkoLabel->setText(" Tervetuloa!");
+    ui->paaOtsikkoLabel->setAlignment(Qt::AlignCenter);
 
+    //  ui->otsikkoLabel->setFont(f); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
+    ui->paaOtsikkoLabel->setText(" Tervetuloa! <br>"
+                                 " Syötä kortti.");
+
+    /*
     ui->paaOtsikkoLabel_2->setFont(f);
     ui->paaOtsikkoLabel_2->setText(" Syötä Kortti");
+    */
+
+    ui->saldoLabel->setStyleSheet("font: 18pt;");
+    ui->saldoLCD_2->setStyleSheet("font: 18pt;");
+    ui->saldoLabel->setFont(f2);
+    ui->saldoLCD_2->setFont(f2);
+    ui->saldoLCD_2->setAlignment(Qt::AlignCenter);
 
     ui->saldoLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
-    ui->label_5->setStyleSheet("QLabel {background-color : black; color : white; }"); // nimi label
-    ui->label_6->setStyleSheet("QLabel {background-color : black; color : white; }"); // osoite label
-    ui->label_7->setStyleSheet("QLabel {background-color : black; color : white; }"); // puhelinnumero label
-    ui->label_8->setStyleSheet("QLabel {background-color : black; color : white; }"); // tilinumero label
+
+    ui->label_5->setStyleSheet("QLabel {color : black; }"); // nimi label
+
+    ui->label_6->setStyleSheet("QLabel {color : black; }"); // osoite label
+
+    ui->label_7->setStyleSheet("QLabel {color : black; }"); // puhelinnumero label
+
+    ui->label_8->setStyleSheet("QLabel {color : black; }"); // tilinumero label
 
     ui->stackedWidget->setCurrentIndex(tervetuloaPage);
 
@@ -204,7 +220,7 @@ void MainWindow::loggedInHandler(events e)
         emit requestGet(resource, webToken);
     } else if (e == naytaEtusivu){
 
-        ui->saldoLCD->display(saldo);
+        ui->saldoLCD_2->setText(saldo);
 
         pageHandler(mainPage, true, false, "Terve, " + nimi);
 
