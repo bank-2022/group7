@@ -52,6 +52,8 @@ private slots:
 
     void on_btnEnter_clicked();
 
+    void on_btnPiste_clicked();
+
 private:
     Ui::numpad_ui *ui;
     QString num;

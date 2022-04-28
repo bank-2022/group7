@@ -10,8 +10,11 @@
     <height>648</height>
    </rect>
   </property>
+  <property name="mouseTracking">
+   <bool>true</bool>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Bankautomat</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <widget class="QStackedWidget" name="stackedWidget">
@@ -24,7 +27,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>7</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -343,6 +346,32 @@ p, li { white-space: pre-wrap; }
     </property>
     <property name="text">
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="logoutTimerTeksti">
+    <property name="geometry">
+     <rect>
+      <x>610</x>
+      <y>630</y>
+      <width>231</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>automaattiseen uloskirjautumiseen aikaa :</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="logoutTimerNumero">
+    <property name="geometry">
+     <rect>
+      <x>820</x>
+      <y>630</y>
+      <width>41</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>30</string>
     </property>
    </widget>
   </widget>

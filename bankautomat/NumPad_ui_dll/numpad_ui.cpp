@@ -131,6 +131,8 @@ void numpad_ui::on_btnClear_clicked()
     num.clear();
 }
 
-
-
+void numpad_ui::on_btnPiste_clicked()
+{
+    clickedHandler(".");
+}
 

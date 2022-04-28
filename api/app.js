@@ -28,7 +28,7 @@ app.use(helmet());
 app.use(cors());
 
 app.use('/login', loginRouter);
-app.use(authenticateToken);
+//app.use(authenticateToken);
 app.use("/users", usersRouter);
 app.use("/asiakas", asiakasRouter);
 app.use("/asiakasTili", asiakasTiliRouter);
@@ -37,7 +37,7 @@ app.use("/tili", tiliRouter);
 app.use("/tilitapahtuma", tilitapahtumaRouter);
 app.use("/proseduuri", proseduuriRouter);
 
-function authenticateToken(req, res, next) {
+/*function authenticateToken(req, res, next) {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
   
@@ -54,5 +54,7 @@ function authenticateToken(req, res, next) {
       next()
     })
   }
+  */
+  
 
 module.exports = app;

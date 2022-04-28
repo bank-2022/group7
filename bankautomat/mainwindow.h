@@ -11,6 +11,11 @@
 #include <QSerialPort>
 #include <QStandardItemModel>
 #include <QHeaderView>
+#include <QMouseEvent>
+
+#include <QTime>
+#include <QTimer>
+#include <QtGlobal>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -63,7 +68,9 @@ public:
         tilitapahtumaPage,
         tilisiirtoPage
     };
-
+public slots:
+    void myTimerHandler();
+    void mousePressEvent(QMouseEvent *event)override;
 private slots:
     void processData(QString, QByteArray);
     void on_syotaPin_clicked();
@@ -84,6 +91,8 @@ private slots:
     void numpadEnter_clicked();
     void on_showNumpad_clicked();
     void on_syotaTilinumero_clicked();
+
+
 
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
@@ -110,11 +119,14 @@ private:
     rahaliikenne toimenpide;
     events event;
 
+    QTimer *timer;
+    qint32 counter;
     void loginHandler();
     void kirjautumisHandler(events);
     void loggedInHandler(events);
     void pageHandler(pages, bool, bool, QString);
     void summaHandler(QString, rahaliikenne);
+
 
 };
 #endif // MAINWINDOW_H

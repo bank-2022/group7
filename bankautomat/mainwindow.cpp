@@ -5,8 +5,12 @@
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
+
+
 {
+
     ui->setupUi(this);
+
 
     objRestApi = new Rest_api;
     objNumPad = new numpad_ui;
@@ -16,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent)
     ui->otsikkoLabel->setFont(f);
 
     ui->stackedWidget->setCurrentIndex(tervetuloaPage);
+    ui->logoutTimerTeksti->setText(" ");
+    ui->logoutTimerNumero->setText(" ");
+
+
+
+
+
 
     //Tableviewin asetukset
     QHeaderView *hView;
@@ -45,18 +56,33 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(oRfid, &Rfid_dll::readEvent,
             this, &MainWindow::on_syotaPin_clicked);
+
+    counter = 30;
+
+    timer = new QTimer(this);
+    connect(timer,SIGNAL(timeout()), this ,SLOT(myTimerHandler()));
+
+
+
+
+
+
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete objRestApi;
+    delete timer;
+    timer = nullptr;
     objRestApi = nullptr;
     delete oRfid;
     oRfid = nullptr;
     delete objNumPad;
     objNumPad = nullptr;
 }
+
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
@@ -80,7 +106,7 @@ void MainWindow::kirjautumisHandler(events e)
 
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+        kortinnro = "1"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -110,6 +136,8 @@ void MainWindow::loginHandler()
 
 void MainWindow::loggedInHandler(events e)
 {
+
+
     if (e == naytaEtusivu){
         pageHandler(mainPage, true, false, "Terve, " + nimi);
     } else if (e == nosto){
@@ -158,11 +186,13 @@ void MainWindow::pageHandler(pages sivu, bool valikko, bool summat, QString teks
 
 void MainWindow::on_syotaPin_clicked()
 {
+    timer->start(1000);  // 100 nanoseconds or 1 second interval
     kirjautumisHandler(korttiSyotetty);
 }
 
 void MainWindow::numpadEnter_clicked()
 {
+    counter = 30;
     if (event == korttiSyotetty){
         kirjautumisHandler(pinSyotetty);
     } else if (event == muuSumma){
@@ -175,66 +205,93 @@ void MainWindow::numpadEnter_clicked()
 void MainWindow::on_nosto_clicked()
 {
     loggedInHandler(nosto);
+    counter = 30;
+
 }
 
 void MainWindow::on_talletus_clicked()
 {
     loggedInHandler(talletus);
+    counter = 30;
+
 }
 
 void MainWindow::on_tilisiirto_clicked()
 {
     loggedInHandler(tilisiirto);
+    counter = 30;
+
 }
 
 void MainWindow::on_syotaTilinumero_clicked()
 {
     loggedInHandler(tilinumero);
+    counter = 30;
+
 }
+
 
 void MainWindow::on_tilitapahtumat_clicked()
 {
     loggedInHandler(haeTilitapahtumat);
+    counter = 30;
+
 }
 
 void MainWindow::on_naytaTiedot_clicked()
 {
     loggedInHandler(kayttajatiedot);
+    counter = 30;
+
 }
 
 void MainWindow::on_kirjauduUlos_clicked()
 {
     kirjautumisHandler(kirjauduUlos);
+    counter = 30;
+
 }
 
 void MainWindow::on_summa10_clicked()
 {
     summaHandler("10", toimenpide);
+    counter = 30;
+
 }
 
 void MainWindow::on_summa20_clicked()
 {
     summaHandler("20", toimenpide);
+    counter = 30;
+
 }
 
 void MainWindow::on_summa50_clicked()
 {
     summaHandler("50", toimenpide);
+    counter = 30;
+
 }
 
 void MainWindow::on_summa100_clicked()
 {
     summaHandler("100", toimenpide);
+    counter = 30;
+
 }
 
 void MainWindow::on_summa500_clicked()
 {
     summaHandler("500", toimenpide);
+    counter = 30;
+
 }
 
 void MainWindow::on_summaMuu_clicked()
 {
     loggedInHandler(muuSumma);
+    counter = 30;
+
 }
 
 void MainWindow::summaHandler(QString summa, rahaliikenne toimenpide)
@@ -264,9 +321,12 @@ void MainWindow::summaHandler(QString summa, rahaliikenne toimenpide)
     emit requestPost(resource, webToken, jsonObj);
 }
 
+
+
 void MainWindow::on_showNumpad_clicked()
 {
     objNumPad->show();
+    counter = 30;
 }
 
 void MainWindow::processData(QString resource, QByteArray data)
@@ -320,4 +380,33 @@ void MainWindow::processData(QString resource, QByteArray data)
         loggedInHandler(naytaTilitapahtumat);
     }
 }
+void MainWindow::mousePressEvent(QMouseEvent *event)
+{
+
+    if(event->button() == Qt::MouseButton::LeftButton)
+    {
+        qDebug() << "mouse was clicked / timer was restarted";
+        //timer restart
+        counter = 30;
+    }
+
+}
+
+void MainWindow::myTimerHandler()
+{
+    ui->logoutTimerTeksti->setText("automaattiseen uloskirjautumiseen aikaa : ");
+    QString s = QString::number(counter-1);
+    ui->logoutTimerNumero->setText(s);
+    counter--;
+    qDebug()<<counter;
+    if(counter == 0)
+    {
+        counter = 30;
+        timer->stop();
+        objNumPad->close();
+        kirjautumisHandler(kirjauduUlos);
+
+    }
+}
+
 
