@@ -111,6 +111,7 @@ private:
     QString nimi, osoite, puhnro, tilinro, saldo;
     QString rcvTilinro;
     int loginAttempts;
+    bool kirjautunutState;
 
     rahaliikenne toimenpide;
     events event;

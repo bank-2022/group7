@@ -103,7 +103,7 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 void MainWindow::kirjautumisHandler(events e)
 {
-    if (e == korttiSyotetty){
+    if (e == korttiSyotetty && kirjautunutState == false){
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
         if(this->lukitutKortitCheck() == true){
@@ -143,6 +143,7 @@ void MainWindow::kirjautumisHandler(events e)
         objNumPad->close();
         QString resource = "kortti/asiakasjatili/" + kortinnro;
         loginAttempts = 0;
+        kirjautunutState = true;
         emit requestGet(resource, webToken);
 
     } else if (e == korttiLukittu){
@@ -158,6 +159,7 @@ void MainWindow::kirjautumisHandler(events e)
         pageHandler(tervetuloaPage, false, false, "");
         webToken.clear();
         ajastin->stop();
+        kirjautunutState = false;
         loginAttempts = 0;
     }
 
