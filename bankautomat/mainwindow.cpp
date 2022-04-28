@@ -19,7 +19,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->stackedWidget->setCurrentIndex(tervetuloaPage);
 
-    //Tableviewin asetukset
+    //Tilitapahtumien viewin asetukset
     QHeaderView *hView;
     hView = ui->tilitapahtumaView->horizontalHeader();
     hView->setSectionResizeMode(QHeaderView::ResizeToContents);
@@ -110,7 +110,6 @@ void MainWindow::kirjautumisHandler(events e)
             kirjautumisHandler(korttiLukittu);
         } else{
             event = korttiSyotetty;
-            this->lukitutKortitCheck();
             ui->stackedWidget->setCurrentIndex(kirjauduPage);
 
             ui->kirjautumisLabel->clear();
@@ -126,7 +125,7 @@ void MainWindow::kirjautumisHandler(events e)
         }
     } else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
-        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+        //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
