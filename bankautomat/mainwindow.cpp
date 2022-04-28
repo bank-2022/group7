@@ -16,9 +16,11 @@ MainWindow::MainWindow(QWidget *parent)
 
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     QFont f2( "Comic Sans MS", 18, QFont::Bold);
+    ui->tervetuloaLabel->setFont(f);
+    ui->tervetuloaLabel->setAlignment(Qt::AlignCenter);
+    ui->tervetuloaLabel->setText(" Tervetuloa! <br> Syötä kortti.");
     ui->paaOtsikkoLabel->setFont(f);
-    ui->paaOtsikkoLabel->setAlignment(Qt::AlignCenter);
-    ui->paaOtsikkoLabel->setText(" Tervetuloa! <br> Syötä kortti.");
+    ui->paaOtsikkoLabel->clear();
 
     ui->saldoLabel->setStyleSheet("font: 18pt;");
     ui->saldoLCD->setStyleSheet("font: 18pt;");
