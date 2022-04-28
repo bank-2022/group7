@@ -1,6 +1,6 @@
 CREATE DATABASE  IF NOT EXISTS `bankautomat` /*!40100 DEFAULT CHARACTER SET utf8 */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `bankautomat`;
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
+-- MySQL dump 10.13  Distrib 8.0.27, for Win64 (x86_64)
 --
 -- Host: 127.0.0.1    Database: bankautomat
 -- ------------------------------------------------------
@@ -40,7 +40,7 @@ CREATE TABLE `asiakas` (
 
 LOCK TABLES `asiakas` WRITE;
 /*!40000 ALTER TABLE `asiakas` DISABLE KEYS */;
-INSERT INTO `asiakas` VALUES (1,'Yksikorttimies_1','a','1'),(2,'Yksikorttimies_2','b','2'),(3,'Monikorttimies','c','3');
+INSERT INTO `asiakas` VALUES (1,'Yksikorttimies_1','Testikatu 1','0700123123'),(2,'Yksikorttimies_2','Testikatu 2','0401337666'),(3,'Monikorttimies','Testikatu 3','040715517');
 /*!40000 ALTER TABLE `asiakas` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -70,7 +70,7 @@ CREATE TABLE `asiakastili` (
 
 LOCK TABLES `asiakastili` WRITE;
 /*!40000 ALTER TABLE `asiakastili` DISABLE KEYS */;
-INSERT INTO `asiakastili` VALUES (1,1,'Tili_1'),(2,2,'Tili_1'),(3,3,'Tili_2'),(4,3,'Tili_3');
+INSERT INTO `asiakastili` VALUES (1,1,'1111'),(2,2,'1111'),(3,3,'2222'),(4,3,'3333');
 /*!40000 ALTER TABLE `asiakastili` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -101,7 +101,7 @@ CREATE TABLE `kortti` (
 
 LOCK TABLES `kortti` WRITE;
 /*!40000 ALTER TABLE `kortti` DISABLE KEYS */;
-INSERT INTO `kortti` VALUES ('0A005968A0','$2a$10$D3AMtKU2babFjfT5GunRl.hTYOB4ebAd3H54/5fYOorcOli9FBghC','Tili_2',3),('0B00301548','$2a$10$a4xYny5FmH.l33XEhlIb2ODZVmyCfimwI16ZUaYjUrJWNxsi8SKg6','Tili_3',2),('1','0000','Tili_1',1),('2','1111','Tili_1',2),('3','2222','Tili_2',3),('4','3333','Tili_3',3);
+INSERT INTO `kortti` VALUES ('0A005968A0','$2a$10$7kkecaLjL0WpmUQoYpWdteDadOYTEm7Ayk.wKWUW4Z/LN1YH078fi','1111',1),('0B00301548','$2a$10$sz/tvkmNJay/uX.rhNXbZOzioMlRqTuMV2.WEHOkggwXl3Y5SunN6','2222',2),('1234ABCD','$2a$10$M.Y4wC7ky7PrNMT8stiOIORTcGMkeiYhIlM8E9zEGEZyYLK314Jpy','3333',3),('DCBA4321','$2a$10$Jldq53Zx7uL3zfpC1zOjxeRZ2sfG0wqr9D5B33Ls2k0h41LDvfwRK','3333',3);
 /*!40000 ALTER TABLE `kortti` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -126,7 +126,7 @@ CREATE TABLE `tili` (
 
 LOCK TABLES `tili` WRITE;
 /*!40000 ALTER TABLE `tili` DISABLE KEYS */;
-INSERT INTO `tili` VALUES ('Tili_1',1000),('Tili_2',1000),('Tili_3',1000);
+INSERT INTO `tili` VALUES ('1111',1000),('2222',1000),('3333',1000);
 /*!40000 ALTER TABLE `tili` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -143,7 +143,7 @@ CREATE TABLE `tilitapahtuma` (
   `dateTime` datetime NOT NULL,
   `summa` double NOT NULL,
   `tilitapahtuma` varchar(45) NOT NULL,
-  `idKortti` int NOT NULL,
+  `idKortti` varchar(45) NOT NULL,
   PRIMARY KEY (`idTilitapahtuma`),
   UNIQUE KEY `idTilitapahtuma_UNIQUE` (`idTilitapahtuma`),
   KEY `idTilinumero` (`idTilinumero`),
@@ -173,7 +173,7 @@ UNLOCK TABLES;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `nosto`(IN kortinnro INT, IN tilinro VARCHAR(45), IN rahasumma DOUBLE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `nosto`(IN kortinnro VARCHAR(45), IN tilinro VARCHAR(45), IN rahasumma DOUBLE)
 BEGIN
 DECLARE test INT DEFAULT 0;
 START TRANSACTION;
@@ -203,7 +203,7 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `talletus`(IN kortinnro INT, IN tilinro VARCHAR(45), IN rahasumma DOUBLE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `talletus`(IN kortinnro VARCHAR(45), IN tilinro VARCHAR(45), IN rahasumma DOUBLE)
 BEGIN
 DECLARE test INT DEFAULT 0;
 START TRANSACTION;
@@ -233,19 +233,19 @@ DELIMITER ;
 /*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
 /*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION' */ ;
 DELIMITER ;;
-CREATE DEFINER=`root`@`localhost` PROCEDURE `tilisiirto`(IN kortinnro INT, IN sendertilinro VARCHAR(45), IN receivertilinro VARCHAR(45), IN rahasumma DOUBLE)
+CREATE DEFINER=`root`@`localhost` PROCEDURE `tilisiirto`(IN kortinnro VARCHAR(45), IN tilinro VARCHAR(45), IN receivertilinro VARCHAR(45), IN rahasumma DOUBLE)
 BEGIN
 DECLARE test1, test2 INT DEFAULT 0;
 START TRANSACTION;
-UPDATE tili SET saldo = saldo-rahasumma WHERE idTilinumero = sendertilinro;
+UPDATE tili SET saldo = saldo-rahasumma WHERE idTilinumero = tilinro;
 SET test1 = ROW_COUNT();
 UPDATE Tili SET saldo = saldo+rahasumma WHERE idTilinumero = receivertilinro;
 SET test2 = ROW_COUNT();
 
 IF(test1 > 0 AND test2 > 0) THEN
 COMMIT;
-INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(sendertilinro, kortinnro, NOW(), rahasumma, "Lähtevä tilisiirto");
-INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(receivertilinro, kortinnro, NOW(), rahasumma, "Saapuva tilisiirto");
+INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(tilinro, kortinnro, NOW(), rahasumma, CONCAT("Siirto tilille ", receivertilinro));
+INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(receivertilinro, kortinnro, NOW(), rahasumma, CONCAT("Siirto tilille ", receivertilinro));
 ELSE
 ROLLBACK;
 
@@ -266,4 +266,4 @@ DELIMITER ;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2022-04-20 12:11:44
+-- Dump completed on 2022-04-25 13:35:12
