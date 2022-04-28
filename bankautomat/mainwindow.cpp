@@ -15,7 +15,34 @@ MainWindow::MainWindow(QWidget *parent)
     ajastin = new QTimer;
 
     QFont f( "Comic Sans MS", 25, QFont::Bold);
-    ui->otsikkoLabel->setFont(f);
+    QFont f2( "Comic Sans MS", 18, QFont::Bold);
+    ui->paaOtsikkoLabel->setFont(f);
+    ui->paaOtsikkoLabel->setAlignment(Qt::AlignCenter);
+
+    //  ui->otsikkoLabel->setFont(f); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
+    ui->paaOtsikkoLabel->setText(" Tervetuloa! <br>"
+                                 " Syötä kortti.");
+
+    /*
+    ui->paaOtsikkoLabel_2->setFont(f);
+    ui->paaOtsikkoLabel_2->setText(" Syötä Kortti");
+    */
+
+    ui->saldoLabel->setStyleSheet("font: 18pt;");
+    ui->saldoLCD_2->setStyleSheet("font: 18pt;");
+    ui->saldoLabel->setFont(f2);
+    ui->saldoLCD_2->setFont(f2);
+    ui->saldoLCD_2->setAlignment(Qt::AlignCenter);
+
+    ui->saldoLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
+
+    ui->label_5->setStyleSheet("QLabel {color : black; }"); // nimi label
+
+    ui->label_6->setStyleSheet("QLabel {color : black; }"); // osoite label
+
+    ui->label_7->setStyleSheet("QLabel {color : black; }"); // puhelinnumero label
+
+    ui->label_8->setStyleSheet("QLabel {color : black; }"); // tilinumero label
 
     ui->stackedWidget->setCurrentIndex(tervetuloaPage);
 
@@ -80,6 +107,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->siirraButton, &QAbstractButton::clicked,
             this, &MainWindow::NostaTalletaSiirra_clicked);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -106,6 +135,8 @@ void MainWindow::kirjautumisHandler(events e)
     if (e == korttiSyotetty && kirjautunutState == false){
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
+
+        kortinnro = ui->idKortti->text(); //kovakoodaus testaamista varten syöttäkää kortin id line edittiin
         if(this->lukitutKortitCheck() == true){
             kirjautumisHandler(korttiLukittu);
         } else{
@@ -117,7 +148,7 @@ void MainWindow::kirjautumisHandler(events e)
 
             objNumPad->stringSizeLimiter(true, 4);
             objNumPad->censorInput(true);
-            objNumPad->show();
+
 
             ui->kirjautumisLabel->clear();
             qDebug()<<kortinnro;
@@ -132,8 +163,16 @@ void MainWindow::kirjautumisHandler(events e)
         jsonObj.insert("pin", pin);
         QString resource = "login";
         emit requestLogin(resource, webToken, jsonObj);
+
     } else if (e == pinVaarin){
-        ui->kirjautumisLabel->setText("PIN VÄÄRIN");
+        ui->varoitusLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
+        ui->varoitusLabel->setText("PIN VÄÄRIN");
+
+      // alempi ehto myöskin kommentiksi jos ei käytä testailussa kortinnro = (idKortti lineEditin arvo)
+      if (ui->idKortti->text().isEmpty()) {
+            ui->varoitusLabel->setText("Kortin ID puuttuu");
+      }
+
         loginAttempts++;
         qDebug()<<loginAttempts;
         if(loginAttempts == 3){
@@ -156,7 +195,8 @@ void MainWindow::kirjautumisHandler(events e)
         pageHandler(pinLukittuPage,false,false,"");
 
     } else if (e == kirjauduUlos){
-        pageHandler(tervetuloaPage, false, false, "");
+        pageHandler(tervetuloaPage, false, false, " Tervetuloa!");
+
         webToken.clear();
         ajastin->stop();
         kirjautunutState = false;
@@ -176,20 +216,29 @@ void MainWindow::loginHandler()
 
 void MainWindow::loggedInHandler(events e)
 {
-    if (e == naytaEtusivu){
+    if (e == haeSaldoEtusivulle){
+        QString resource = "tili/saldo/" + tilinro;
+        emit requestGet(resource, webToken);
+    } else if (e == naytaEtusivu){
+
+        ui->saldoLCD_2->setText(saldo);
+
         pageHandler(mainPage, true, false, "Terve, " + nimi);
+
     } else if (e == nosto){
         toimenpide = nosta;
         ui->nostoPageStackedWidget->setVisible(false);
         ui->nostoLabel->clear();
         summa.clear();
         pageHandler(nostoPage, true, true, "Nosto");
+
     } else if (e == talletus){
         toimenpide = talleta;
         ui->talletusPageStackedWidget->setVisible(false);
         ui->talletusLabel->clear();
         summa.clear();
         pageHandler(talletusPage, true, true, "Talletus");
+
     } else if (e == tilisiirto){
         toimenpide = siirra;
         ui->siirtoPageStackedWidget->setVisible(false);
@@ -197,13 +246,25 @@ void MainWindow::loggedInHandler(events e)
         summa.clear();
         rcvTilinro.clear();
         pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
+
     } else if (e == haeTilitapahtumat){
         QString resource = "tilitapahtuma/tilinumero/" + tilinro;
         emit requestGet(resource, webToken);
+
     } else if (e == naytaTilitapahtumat){
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
+
     } else if (e == kayttajatiedot){
         pageHandler(tiedotPage, true, false, "Tietosi");
+
+        ui->nimiLabel->setText(nimi);
+
+        ui->osoiteLabel->setText(osoite);
+
+        ui->puhnroLabel->setText(puhnro);
+
+        ui->tilinroLabel->setText(tilinro);
+
     }
 }
 
@@ -212,7 +273,7 @@ void MainWindow::pageHandler(pages sivu, bool valikko, bool summat, QString teks
     ui->stackedWidget->setCurrentIndex(sivu);
     ui->valikkoWidget->setVisible(valikko);
     ui->summatWidget->setVisible(summat);
-    ui->otsikkoLabel->setText(teksti);
+    // ui->otsikkoLabel->setText(teksti); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
 }
 
 void MainWindow::on_syotaPin_clicked()
@@ -229,6 +290,11 @@ void MainWindow::numpadEnter_clicked()
     } else if (event == tilinumero){
         tilinumeroHandler();
     }
+}
+
+void MainWindow::on_etusivu_clicked()
+{
+    loggedInHandler(haeSaldoEtusivulle);
 }
 
 void MainWindow::on_nosto_clicked()
@@ -390,14 +456,13 @@ void MainWindow::kylla_clicked()
 
 void MainWindow::ei_clicked()
 {
-    ui->nostoPageStackedWidget->setVisible(false);
-    ui->talletusPageStackedWidget->setVisible(false);
-    ui->siirtoPageStackedWidget->setVisible(false);
-    ui->nostoLabel->clear();
-    ui->talletusLabel->clear();
-    ui->siirtoLabel->clear();
-    summa.clear();
-    rcvTilinro.clear();
+    if(toimenpide == nosta){
+        loggedInHandler(nosto);
+    } else if(toimenpide == talleta){
+        loggedInHandler(talletus);
+    } else if(toimenpide == siirra){
+        loggedInHandler(tilisiirto);
+    }
 }
 
 void MainWindow::rahaliikenneHandler()
@@ -448,7 +513,14 @@ void MainWindow::processData(QString resource, QByteArray data)
         osoite = jsonObj["osoite"].toString();
         puhnro = jsonObj["puhelinnumero"].toString();
         tilinro = jsonObj["idTilinumero"].toString();
-        saldo = QString::number(jsonObj["saldo"].toDouble(),'f',0); //ei näy oikein
+        saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0); //ei näy oikein
+
+        loggedInHandler(naytaEtusivu);
+
+    } else if (resource == "tili/saldo/" + tilinro){
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+        saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0);
 
         loggedInHandler(naytaEtusivu);
 
@@ -479,5 +551,8 @@ void MainWindow::processData(QString resource, QByteArray data)
         loggedInHandler(naytaTilitapahtumat);
     }
 }
+
+
+
 
 
