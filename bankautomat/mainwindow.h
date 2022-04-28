@@ -54,7 +54,6 @@ public:
 
     enum pages{
         tervetuloaPage,
-        kirjauduPage,
         mainPage,
         nostoPage,
         tiedotPage,
@@ -65,7 +64,7 @@ public:
     };
 
 private slots:
-    void processData(QString, QByteArray);
+    void incomingDataHandler(QString, QByteArray);
     void on_syotaPin_clicked();
     void on_tilitapahtumat_clicked();
     void on_nosto_clicked();
@@ -82,7 +81,6 @@ private slots:
 
     void on_naytaTiedot_clicked();
     void numpadEnter_clicked();
-    void on_showNumpad_clicked();
     void on_syotaTilinumero_clicked();
 
     void kylla_clicked();
