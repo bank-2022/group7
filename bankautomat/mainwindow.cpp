@@ -18,21 +18,13 @@ MainWindow::MainWindow(QWidget *parent)
     QFont f2( "Comic Sans MS", 18, QFont::Bold);
     ui->paaOtsikkoLabel->setFont(f);
     ui->paaOtsikkoLabel->setAlignment(Qt::AlignCenter);
-
-    //  ui->otsikkoLabel->setFont(f); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
-    ui->paaOtsikkoLabel->setText(" Tervetuloa! <br>"
-                                 " Syötä kortti.");
-
-    /*
-    ui->paaOtsikkoLabel_2->setFont(f);
-    ui->paaOtsikkoLabel_2->setText(" Syötä Kortti");
-    */
+    ui->paaOtsikkoLabel->setText(" Tervetuloa! <br> Syötä kortti.");
 
     ui->saldoLabel->setStyleSheet("font: 18pt;");
-    ui->saldoLCD_2->setStyleSheet("font: 18pt;");
+    ui->saldoLCD->setStyleSheet("font: 18pt;");
     ui->saldoLabel->setFont(f2);
-    ui->saldoLCD_2->setFont(f2);
-    ui->saldoLCD_2->setAlignment(Qt::AlignCenter);
+    ui->saldoLCD->setFont(f2);
+    ui->saldoLCD->setAlignment(Qt::AlignCenter);
 
     ui->saldoLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
 
@@ -70,7 +62,7 @@ MainWindow::MainWindow(QWidget *parent)
             objRestApi, &Rest_api::sendPut);
 
     connect(objRestApi, &Rest_api::returnData,
-            this, &MainWindow::processData);
+            this, &MainWindow::incomingDataHandler);
 
     connect(objNumPad, &numpad_ui::numpadEnterClicked,
             this, &MainWindow::numpadEnter_clicked);
@@ -137,27 +129,22 @@ void MainWindow::kirjautumisHandler(events e)
         kortinnro = oRfid->returnId();
         kortinnro.remove(0,3).chop(3);
 
-        kortinnro = ui->idKortti->text(); //kovakoodaus testaamista varten syöttäkää kortin id line edittiin
+        kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         if(this->lukitutKortitCheck() == true){
             kirjautumisHandler(korttiLukittu);
         } else{
             event = korttiSyotetty;
             this->lukitutKortitCheck();
-            ui->stackedWidget->setCurrentIndex(kirjauduPage);
 
-            ui->kirjautumisLabel->clear();
-            //qDebug()<<kortinnro;
+            objNumPad->show();
 
             objNumPad->stringSizeLimiter(true, 4);
             objNumPad->censorInput(true);
 
-
-            ui->kirjautumisLabel->clear();
             qDebug()<<kortinnro;
 
         }
     } else if (e == pinSyotetty){
-        kortinnro = ui->idKortti->text();
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -166,13 +153,6 @@ void MainWindow::kirjautumisHandler(events e)
         emit requestLogin(resource, webToken, jsonObj);
 
     } else if (e == pinVaarin){
-        ui->varoitusLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
-        ui->varoitusLabel->setText("PIN VÄÄRIN");
-
-      // alempi ehto myöskin kommentiksi jos ei käytä testailussa kortinnro = (idKortti lineEditin arvo)
-      if (ui->idKortti->text().isEmpty()) {
-            ui->varoitusLabel->setText("Kortin ID puuttuu");
-      }
 
         loginAttempts++;
         qDebug()<<loginAttempts;
@@ -197,6 +177,7 @@ void MainWindow::kirjautumisHandler(events e)
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, " Tervetuloa!");
 
+        kortinnro.clear();
         webToken.clear();
         ajastin->stop();
         loginAttempts = 0;
@@ -220,7 +201,7 @@ void MainWindow::loggedInHandler(events e)
         emit requestGet(resource, webToken);
     } else if (e == naytaEtusivu){
 
-        ui->saldoLCD_2->setText(saldo);
+        ui->saldoLCD->setText(saldo);
 
         pageHandler(mainPage, true, false, "Terve, " + nimi);
 
@@ -272,7 +253,7 @@ void MainWindow::pageHandler(pages sivu, bool valikko, bool summat, QString teks
     ui->stackedWidget->setCurrentIndex(sivu);
     ui->valikkoWidget->setVisible(valikko);
     ui->summatWidget->setVisible(summat);
-    // ui->otsikkoLabel->setText(teksti); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
+    ui->paaOtsikkoLabel->setText(teksti);
 }
 
 void MainWindow::on_syotaPin_clicked()
@@ -492,12 +473,7 @@ void MainWindow::rahaliikenneHandler()
     emit requestPost(resource, webToken, jsonObj);
 }
 
-void MainWindow::on_showNumpad_clicked()
-{
-    objNumPad->show();
-}
-
-void MainWindow::processData(QString resource, QByteArray data)
+void MainWindow::incomingDataHandler(QString resource, QByteArray data)
 {
     if (resource == "login"){
         webToken = data;
