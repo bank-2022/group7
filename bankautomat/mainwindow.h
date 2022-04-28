@@ -50,6 +50,10 @@ public:
         kirjauduUlos,
         muuSumma,
         summaClicked,
+        pinClicked,
+        uusiPin,
+        uudelleenPin,
+
     };
 
     enum pages{
@@ -89,12 +93,13 @@ private slots:
 
     void on_etusivu_clicked();
 
+    void on_vaihdaSalasana_clicked();
+
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
     void requestGet(QString, QByteArray);
     void requestPut(QString, QByteArray, QJsonObject);
-    void login();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -119,6 +124,8 @@ private:
     QString summa;
     QVector<QString> lukitutKortit;
 
+    QString uusiPIN;
+
     void loginHandler();
     void kirjautumisHandler(events);
     void loggedInHandler(events);
@@ -128,5 +135,6 @@ private:
     void summaButtonsHandler();
     void tilinumeroHandler();
     bool lukitutKortitCheck();
+    void pinVaihtoHandler(events);
 };
 #endif // MAINWINDOW_H

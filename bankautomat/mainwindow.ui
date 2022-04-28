@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>3</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -163,13 +163,26 @@
      </widget>
     </widget>
     <widget class="QWidget" name="naytaTiedotPage">
+     <widget class="QPushButton" name="vaihdaSalasana">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>300</y>
+        <width>141</width>
+        <height>21</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>Vaihda salasana</string>
+      </property>
+     </widget>
      <widget class="QWidget" name="formLayoutWidget">
       <property name="geometry">
        <rect>
-        <x>180</x>
-        <y>70</y>
-        <width>301</width>
-        <height>156</height>
+        <x>160</x>
+        <y>130</y>
+        <width>371</width>
+        <height>141</height>
        </rect>
       </property>
       <layout class="QFormLayout" name="formLayout">

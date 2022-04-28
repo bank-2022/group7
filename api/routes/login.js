@@ -18,7 +18,7 @@ router.post('/',
           if (dbResult.length > 0) {
             bcrypt.compare(pin, dbResult[0].pin, function (err, compareResult) {
               if (compareResult) {
-                console.log("succes");
+                console.log("success");
                 const token = generateAccessToken({ idKortti: idKortti });
                 response.send(token);
               }
@@ -30,7 +30,7 @@ router.post('/',
             );
           }
           else {
-            console.log("card does not exists");
+            console.log("card does not exist");
             response.send(false);
           }
         }

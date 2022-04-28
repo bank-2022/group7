@@ -27,8 +27,13 @@ const kortti={
       return db.query('update kortti set pin=?, idTilinumero=?, idAsiakas=?  where idKortti=?',
       [hash, kortti.idTilinumero, kortti.idAsiakas, id], callback);
     });
+  },
+  updatePin(id, kortti, callback) {
+    bcrypt.hash(kortti.pin, saltRounds, (err, hash) => {
+      return db.query('update kortti set pin=? where idKortti=?',
+      [hash, id], callback);
+    });
   }
-
 }
           
 module.exports = kortti;
