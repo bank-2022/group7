@@ -138,7 +138,7 @@ private:
     void rahaliikenneHandler();
     void summaButtonsHandler();
     void tilinumeroHandler();
-    bool korttiOlemassaCheck();
+    void korttiOlemassaCheck();
     bool lukitutKortitCheck();
     void pinVaihtoHandler(events);
 };
