@@ -524,9 +524,8 @@ void MainWindow::incomingDataHandler(QString resource, QByteArray data)
         for(int row = 0;row<json_array.size();row++){
             QJsonValue value = json_array.at(row);
             QJsonObject jsonObj = value.toObject();
-            QString date = jsonObj["dateTime"].toString();
-            date.replace("-","/").replace("T"," ").chop(5);
-            QStandardItem *Aikaleima = new QStandardItem(date);
+
+            QStandardItem *Aikaleima = new QStandardItem(jsonObj["aikaleima"].toString());
             tilitapahtumaModel->setItem(row, 0, Aikaleima);
             QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
             tilitapahtumaModel->setItem(row, 1, Summa);
