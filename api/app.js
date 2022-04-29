@@ -12,7 +12,9 @@ var usersRouter = require("./routes/users");
 var asiakasRouter = require("./routes/asiakas");
 var asiakasTiliRouter = require("./routes/asiakasTili");
 var korttiRouter = require("./routes/kortti");
+var korttiCheckRouter = require("./routes/korttiCheck");
 var tiliRouter = require("./routes/tili");
+var tilitapahtumaRouter = require("./routes/tilitapahtuma");
 var tilitapahtumaRouter = require("./routes/tilitapahtuma");
 var proseduuriRouter = require("./routes/proseduuri");
 
@@ -27,6 +29,7 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(helmet());
 app.use(cors());
 
+app.use("/korttiCheck", korttiCheckRouter);
 app.use('/login', loginRouter);
 app.use(authenticateToken);
 app.use("/users", usersRouter);
