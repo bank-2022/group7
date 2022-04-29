@@ -87,8 +87,8 @@ private slots:
     void on_naytaTiedot_clicked();
     void numpadEnter_clicked();
 
-    void kylla_clicked();
-    void ei_clicked();
+    void on_kyllaButton_clicked();
+    void on_eiButton_clicked();
 
     void on_vaihdaPin_clicked();
 

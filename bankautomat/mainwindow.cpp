@@ -68,12 +68,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ajastin, &QTimer::timeout,
             this, &MainWindow::on_kirjauduUlos_clicked);
 
-    connect(ui->kyllaButton, &QAbstractButton::clicked,
-            this, &MainWindow::kylla_clicked);
-
-    connect(ui->eiButton, &QAbstractButton::clicked,
-            this, &MainWindow::ei_clicked);
-
     kirjautunutState = false;
 }
 
@@ -389,6 +383,9 @@ void MainWindow::pinVaihtoHandler(events e)
             QString resource = "kortti/pin/" + kortinnro;
             emit requestPut(resource, webToken, jsonObj);
             objNumPad->close();
+            ui->vaihdaPinLabel->setText("PIN vaihdettu");
+            QTimer::singleShot(3000, this, [this]() { ui->vaihdaPinLabel->clear(); } );
+
         } else {
             event = uudelleenPin;
             objNumPad->setWindowTitle("PIN ei täsmää, yritä uudelleen");
@@ -427,23 +424,26 @@ void MainWindow::summaButtonsHandler()
     }
 }
 
-void MainWindow::kylla_clicked()
+void MainWindow::on_kyllaButton_clicked()
 {
     if(toimenpide == nosta){
         ui->rahaliikenneLabel->setText("Nosto onnistui!");
+        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->clear(); } );
         ui->vahvistusWidget->hide();
     } else if(toimenpide == talleta){
         ui->rahaliikenneLabel->setText("Talletus onnistui!");
+        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->clear(); } );
         ui->vahvistusWidget->hide();
     } else if(toimenpide == siirra){
         ui->rahaliikenneLabel->setText("Tilisiirto onnistui!");
+        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->clear(); } );
         ui->vahvistusWidget->hide();
     }
 
     rahaliikenneHandler();
 }
 
-void MainWindow::ei_clicked()
+void MainWindow::on_eiButton_clicked()
 {
     if(toimenpide == nosta){
         loggedInHandler(nosto);
@@ -517,9 +517,9 @@ void MainWindow::incomingDataHandler(QString resource, QByteArray data)
         QJsonArray json_array = jsonDoc.array();
 
         QStandardItemModel *tilitapahtumaModel = new QStandardItemModel(10,3);
-        tilitapahtumaModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Aikaleima"));
+        tilitapahtumaModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Aika"));
         tilitapahtumaModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Summa"));
-        tilitapahtumaModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Tyyppi"));
+        tilitapahtumaModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Tapahtuma"));
 
         for(int row = 0;row<json_array.size();row++){
             QJsonValue value = json_array.at(row);
