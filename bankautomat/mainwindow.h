@@ -34,6 +34,8 @@ public:
 
     enum events{
         korttiSyotetty,
+        korttiValidoitu,
+        korttiInvalidoitu,
         pinSyotetty,
         pinVaarin,
         pinOikein,
@@ -61,7 +63,7 @@ public:
         talletusPage,
         tilitapahtumaPage,
         tilisiirtoPage,
-        pinLukittuPage,
+        vikatilaPage,
     };
 
 private slots:
@@ -115,6 +117,7 @@ private:
     QString rcvTilinro;
     int loginAttempts;
     bool kirjautunutState;
+    bool korttiValidointi;
 
     rahaliikenne toimenpide;
     events event;
@@ -130,6 +133,8 @@ private:
     void rahaliikenneHandler();
     void summaButtonsHandler();
     void tilinumeroHandler();
+    bool korttiOlemassaCheck();
     bool lukitutKortitCheck();
+
 };
 #endif // MAINWINDOW_H

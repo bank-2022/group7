@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>4</number>
+     <number>8</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -499,23 +499,8 @@ p, li { white-space: pre-wrap; }
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="pinVaarin">
-     <widget class="QLabel" name="label">
-      <property name="geometry">
-       <rect>
-        <x>160</x>
-        <y>200</y>
-        <width>521</width>
-        <height>131</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:36pt;&quot;&gt;Pin Väärin. Kortti lukittu.&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="pinVaarin_2">
-     <widget class="QLabel" name="label">
+    <widget class="QWidget" name="vikatilaPage">
+     <widget class="QLabel" name="vikatilaLabel">
       <property name="geometry">
        <rect>
         <x>160</x>

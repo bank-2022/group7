@@ -18,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     QFont f2( "Comic Sans MS", 18, QFont::Bold);
     ui->paaOtsikkoLabel->setFont(f);
     ui->paaOtsikkoLabel->setAlignment(Qt::AlignCenter);
+    ui->vikatilaLabel->setFont(f);
 
     //  ui->otsikkoLabel->setFont(f); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
     ui->paaOtsikkoLabel->setText(" Tervetuloa! <br>"
@@ -131,30 +132,36 @@ void MainWindow::closeEvent(QCloseEvent *event)
 }
 
 void MainWindow::kirjautumisHandler(events e)
-{
+{    
     if (e == korttiSyotetty && kirjautunutState == false){
-        kortinnro = oRfid->returnId();
-        kortinnro.remove(0,3).chop(3);
+        this->korttiOlemassaCheck();
+    }
+    else if (e == korttiValidoitu){
+        korttiValidointi = true;
+        kirjautunutState = true;
+        ui->idKortti->setText(kortinnro);
 
         kortinnro = ui->idKortti->text(); //kovakoodaus testaamista varten syöttäkää kortin id line edittiin
         if(this->lukitutKortitCheck() == true){
             kirjautumisHandler(korttiLukittu);
-        } else{
-            event = korttiSyotetty;
+        } else if(this->lukitutKortitCheck() == false){
             ui->stackedWidget->setCurrentIndex(kirjauduPage);
-
+            event = korttiSyotetty;
             ui->kirjautumisLabel->clear();
-            //qDebug()<<kortinnro;
 
             objNumPad->stringSizeLimiter(true, 4);
             objNumPad->censorInput(true);
-
 
             ui->kirjautumisLabel->clear();
             qDebug()<<kortinnro;
 
         }
-    } else if (e == pinSyotetty){
+    } else if (e == korttiInvalidoitu){
+        ajastin->start(5000);
+        korttiValidointi = false;
+        pageHandler(vikatilaPage,false,false,"");
+        ui->vikatilaLabel->setText("Korttia ei tunnistettu!");
+    }else if (e == pinSyotetty){
         //kortinnro = ui->idKortti->text();
         //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
         QString pin = objNumPad->returnNum();
@@ -186,13 +193,13 @@ void MainWindow::kirjautumisHandler(events e)
         emit requestGet(resource, webToken);
 
     } else if (e == korttiLukittu){
-        ajastin->start(2000);
+        ajastin->start(5000);
         objNumPad->close();
         if(this->lukitutKortitCheck()==false){
-            qDebug()<<kortinnro + " lisätty lukittujen listaan";
             lukitutKortit.append(kortinnro);
         }
-        pageHandler(pinLukittuPage,false,false,"");
+        pageHandler(vikatilaPage,false,false,"");
+        ui->vikatilaLabel->setText("Pin väärin. Kortti lukittu!");
 
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, " Tervetuloa!");
@@ -386,6 +393,14 @@ void MainWindow::tilinumeroHandler()
     ui->siirtoPageStackedWidget->setCurrentIndex(0);
 }
 
+bool MainWindow::korttiOlemassaCheck()
+{
+    kortinnro = oRfid->returnId();
+    kortinnro.remove(0,3).chop(3);
+    QString resource = "korttiCheck/" + kortinnro;
+    emit requestGet(resource, webToken);
+}
+
 bool MainWindow::lukitutKortitCheck()
 {
     bool cardLocked;
@@ -504,6 +519,18 @@ void MainWindow::processData(QString resource, QByteArray data)
         webToken = data;
         emit login();
         loginHandler();
+    } else if (resource == "korttiCheck/" + kortinnro){
+        QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
+        QJsonObject jsonObj = jsonDoc.object();
+
+        QString korttiValidointi = jsonObj["idKortti"].toString();
+        if(kortinnro == korttiValidointi){
+            kirjautumisHandler(korttiValidoitu);
+        }
+        else{
+            kirjautumisHandler(korttiInvalidoitu);
+        }
+
     } else if (resource == "kortti/asiakasjatili/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonObject jsonObj = jsonDoc.object();
