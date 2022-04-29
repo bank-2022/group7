@@ -141,7 +141,6 @@ void MainWindow::kirjautumisHandler(events e)
         }
     } else if (e == korttiInvalidoitu){
         ajastin->start(5000);
-        korttiValidointi = false;
         pageHandler(vikatilaPage,false,false,"");
         ui->vikatilaLabel->setText("Korttia ei tunnistettu!");
     }else if (e == pinSyotetty){
@@ -405,7 +404,7 @@ bool MainWindow::lukitutKortitCheck()
     return cardLocked;
 }
 
-void MainWindow::on_vaihdaSalasana_clicked()
+void MainWindow::on_vaihdaPin_clicked()
 {
     pinVaihtoHandler(pinClicked);
 }

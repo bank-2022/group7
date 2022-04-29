@@ -95,7 +95,7 @@ private slots:
 
     void on_etusivu_clicked();
 
-    void on_vaihdaSalasana_clicked();
+    void on_vaihdaPin_clicked();
 
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
