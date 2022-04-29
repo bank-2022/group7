@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>6</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -163,7 +163,7 @@
      </widget>
     </widget>
     <widget class="QWidget" name="naytaTiedotPage">
-     <widget class="QPushButton" name="vaihdaSalasana">
+     <widget class="QPushButton" name="vaihdaPin">
       <property name="geometry">
        <rect>
         <x>270</x>
@@ -173,7 +173,7 @@
        </rect>
       </property>
       <property name="text">
-       <string>Vaihda salasana</string>
+       <string>Vaihda PIN</string>
       </property>
      </widget>
      <widget class="QWidget" name="formLayoutWidget">
@@ -256,6 +256,19 @@
        </item>
       </layout>
      </widget>
+     <widget class="QLabel" name="vaihdaPinLabel">
+      <property name="geometry">
+       <rect>
+        <x>270</x>
+        <y>340</y>
+        <width>141</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <property name="text">
+       <string>TextLabel</string>
+      </property>
+     </widget>
     </widget>
     <widget class="QWidget" name="talletusPage">
      <widget class="QStackedWidget" name="talletusPageStackedWidget">
@@ -268,7 +281,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="talletusOkPage">
        <widget class="QPushButton" name="talletaButton">
@@ -351,7 +364,7 @@
        </rect>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="siirtoOkPage">
        <widget class="QPushButton" name="siirraButton">
