@@ -245,7 +245,7 @@ SET test2 = ROW_COUNT();
 IF(test1 > 0 AND test2 > 0) THEN
 COMMIT;
 INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(tilinro, kortinnro, NOW(), rahasumma, CONCAT("Siirto tilille ", receivertilinro));
-INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(receivertilinro, kortinnro, NOW(), rahasumma, CONCAT("Siirto tilille ", receivertilinro));
+INSERT INTO tilitapahtuma(idTilinumero, idKortti, dateTime, summa, tilitapahtuma) VALUES(receivertilinro, kortinnro, NOW(), rahasumma, CONCAT("Siirto tililtä ", sendertilinro));
 ELSE
 ROLLBACK;
 

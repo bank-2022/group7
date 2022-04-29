@@ -16,6 +16,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     QFont f( "Comic Sans MS", 25, QFont::Bold);
     QFont f2( "Comic Sans MS", 18, QFont::Bold);
+    ui->tervetuloaLabel->setFont(f);
+    ui->tervetuloaLabel->setAlignment(Qt::AlignCenter);
+    ui->tervetuloaLabel->setText(" Tervetuloa! <br> Syötä kortti.");
     ui->paaOtsikkoLabel->setFont(f);
     ui->paaOtsikkoLabel->setAlignment(Qt::AlignCenter);
     ui->vikatilaLabel->setFont(f);
@@ -30,19 +33,15 @@ MainWindow::MainWindow(QWidget *parent)
     */
 
     ui->saldoLabel->setStyleSheet("font: 18pt;");
-    ui->saldoLCD_2->setStyleSheet("font: 18pt;");
+    ui->saldoLCD->setStyleSheet("font: 18pt;");
     ui->saldoLabel->setFont(f2);
-    ui->saldoLCD_2->setFont(f2);
-    ui->saldoLCD_2->setAlignment(Qt::AlignCenter);
+    ui->saldoLCD->setFont(f2);
+    ui->saldoLCD->setAlignment(Qt::AlignCenter);
 
     ui->saldoLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
-
     ui->label_5->setStyleSheet("QLabel {color : black; }"); // nimi label
-
     ui->label_6->setStyleSheet("QLabel {color : black; }"); // osoite label
-
     ui->label_7->setStyleSheet("QLabel {color : black; }"); // puhelinnumero label
-
     ui->label_8->setStyleSheet("QLabel {color : black; }"); // tilinumero label
 
     ui->stackedWidget->setCurrentIndex(tervetuloaPage);
@@ -71,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent)
             objRestApi, &Rest_api::sendPut);
 
     connect(objRestApi, &Rest_api::returnData,
-            this, &MainWindow::processData);
+            this, &MainWindow::incomingDataHandler);
 
     connect(objNumPad, &numpad_ui::numpadEnterClicked,
             this, &MainWindow::numpadEnter_clicked);
@@ -115,6 +114,7 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+
     delete objRestApi;
     objRestApi = nullptr;
     delete oRfid;
@@ -154,7 +154,6 @@ void MainWindow::kirjautumisHandler(events e)
 
             ui->kirjautumisLabel->clear();
             qDebug()<<kortinnro;
-
         }
     } else if (e == korttiInvalidoitu){
         ajastin->start(5000);
@@ -170,16 +169,7 @@ void MainWindow::kirjautumisHandler(events e)
         jsonObj.insert("pin", pin);
         QString resource = "login";
         emit requestLogin(resource, webToken, jsonObj);
-
     } else if (e == pinVaarin){
-        ui->varoitusLabel->setStyleSheet("QLabel {background-color : black; color : white; }");
-        ui->varoitusLabel->setText("PIN VÄÄRIN");
-
-      // alempi ehto myöskin kommentiksi jos ei käytä testailussa kortinnro = (idKortti lineEditin arvo)
-      if (ui->idKortti->text().isEmpty()) {
-            ui->varoitusLabel->setText("Kortin ID puuttuu");
-      }
-
         loginAttempts++;
         qDebug()<<loginAttempts;
         if(loginAttempts == 3){
@@ -191,7 +181,6 @@ void MainWindow::kirjautumisHandler(events e)
         loginAttempts = 0;
         kirjautunutState = true;
         emit requestGet(resource, webToken);
-
     } else if (e == korttiLukittu){
         ajastin->start(5000);
         objNumPad->close();
@@ -203,21 +192,28 @@ void MainWindow::kirjautumisHandler(events e)
 
     } else if (e == kirjauduUlos){
         pageHandler(tervetuloaPage, false, false, " Tervetuloa!");
-
+        kortinnro.clear();
         webToken.clear();
         ajastin->stop();
         kirjautunutState = false;
         loginAttempts = 0;
     }
-
 }
 
 void MainWindow::loginHandler()
 {
     if(webToken == "false") {
-        kirjautumisHandler(pinVaarin);
+        if (event == korttiSyotetty){
+            kirjautumisHandler(pinVaarin);
+        } else if (event == pinSyotetty){
+            pinVaihtoHandler(pinVaarin);
+        }
     } else {
-        kirjautumisHandler(pinOikein);
+        if (event == korttiSyotetty){
+            kirjautumisHandler(pinOikein);
+        } else if (event == pinSyotetty){
+            pinVaihtoHandler(pinOikein);
+        }
     }
 }
 
@@ -227,25 +223,20 @@ void MainWindow::loggedInHandler(events e)
         QString resource = "tili/saldo/" + tilinro;
         emit requestGet(resource, webToken);
     } else if (e == naytaEtusivu){
-
-        ui->saldoLCD_2->setText(saldo);
-
+        ui->saldoLCD->setText(saldo);
         pageHandler(mainPage, true, false, "Terve, " + nimi);
-
     } else if (e == nosto){
         toimenpide = nosta;
         ui->nostoPageStackedWidget->setVisible(false);
         ui->nostoLabel->clear();
         summa.clear();
         pageHandler(nostoPage, true, true, "Nosto");
-
     } else if (e == talletus){
         toimenpide = talleta;
         ui->talletusPageStackedWidget->setVisible(false);
         ui->talletusLabel->clear();
         summa.clear();
         pageHandler(talletusPage, true, true, "Talletus");
-
     } else if (e == tilisiirto){
         toimenpide = siirra;
         ui->siirtoPageStackedWidget->setVisible(false);
@@ -253,25 +244,17 @@ void MainWindow::loggedInHandler(events e)
         summa.clear();
         rcvTilinro.clear();
         pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
-
     } else if (e == haeTilitapahtumat){
         QString resource = "tilitapahtuma/tilinumero/" + tilinro;
         emit requestGet(resource, webToken);
-
     } else if (e == naytaTilitapahtumat){
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
-
     } else if (e == kayttajatiedot){
         pageHandler(tiedotPage, true, false, "Tietosi");
-
         ui->nimiLabel->setText(nimi);
-
         ui->osoiteLabel->setText(osoite);
-
         ui->puhnroLabel->setText(puhnro);
-
         ui->tilinroLabel->setText(tilinro);
-
     }
 }
 
@@ -280,7 +263,7 @@ void MainWindow::pageHandler(pages sivu, bool valikko, bool summat, QString teks
     ui->stackedWidget->setCurrentIndex(sivu);
     ui->valikkoWidget->setVisible(valikko);
     ui->summatWidget->setVisible(summat);
-    // ui->otsikkoLabel->setText(teksti); KOMMENTTINA KOSKA otsikkoLabel poistui vahingossa, se täytyy vielä lisätä UI:hin ja uncommentata tämä koodi.
+    ui->paaOtsikkoLabel->setText(teksti);
 }
 
 void MainWindow::on_syotaPin_clicked()
@@ -296,6 +279,12 @@ void MainWindow::numpadEnter_clicked()
         summaButtonsHandler();
     } else if (event == tilinumero){
         tilinumeroHandler();
+    } else if (event == pinClicked){
+        pinVaihtoHandler(pinSyotetty);
+    } else if (event == uusiPin){
+        pinVaihtoHandler(uusiPin);
+    } else if (event == uudelleenPin){
+        pinVaihtoHandler(uudelleenPin);
     }
 }
 
@@ -413,7 +402,45 @@ bool MainWindow::lukitutKortitCheck()
     }
     cardLocked = false;
     return cardLocked;
+}
 
+void MainWindow::on_vaihdaSalasana_clicked()
+{
+    pinVaihtoHandler(pinClicked);
+}
+
+void MainWindow::pinVaihtoHandler(events e)
+{
+    if (e == pinClicked){
+        objNumPad->setWindowTitle("Syötä PIN");
+        event = pinClicked;
+        objNumPad->show();
+    } else if (e == pinSyotetty){
+        event = pinSyotetty;
+        kirjautumisHandler(pinSyotetty);
+    } else if (e == pinVaarin){
+        event = pinClicked;
+        objNumPad->setWindowTitle("PIN väärin, yritä uudelleen");
+    } else if (e == pinOikein){
+        event = uusiPin;
+        objNumPad->setWindowTitle("Syötä uusi PIN");
+    } else if (e == uusiPin){
+        uusiPIN = objNumPad->returnNum();
+        event = uudelleenPin;
+        objNumPad->setWindowTitle("Syötä uusi PIN uudelleen");
+    } else if (e == uudelleenPin){
+        QString pin = objNumPad->returnNum();
+        if (pin == uusiPIN){
+            QJsonObject jsonObj;
+            jsonObj.insert("pin", pin);
+            QString resource = "kortti/pin/" + kortinnro;
+            emit requestPut(resource, webToken, jsonObj);
+            objNumPad->close();
+        } else {
+            event = uudelleenPin;
+            objNumPad->setWindowTitle("PIN ei täsmää, yritä uudelleen");
+        }
+    }
 }
 
 void MainWindow::summaButtonsHandler()
@@ -508,16 +535,10 @@ void MainWindow::rahaliikenneHandler()
     emit requestPost(resource, webToken, jsonObj);
 }
 
-void MainWindow::on_showNumpad_clicked()
-{
-    objNumPad->show();
-}
-
-void MainWindow::processData(QString resource, QByteArray data)
+void MainWindow::incomingDataHandler(QString resource, QByteArray data)
 {
     if (resource == "login"){
         webToken = data;
-        emit login();
         loginHandler();
     } else if (resource == "korttiCheck/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
@@ -534,23 +555,17 @@ void MainWindow::processData(QString resource, QByteArray data)
     } else if (resource == "kortti/asiakasjatili/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonObject jsonObj = jsonDoc.object();
-
-        //QString idAsiakas = QString::number(jsonObj["idAsiakas"].toInt());
         nimi = jsonObj["nimi"].toString();
         osoite = jsonObj["osoite"].toString();
         puhnro = jsonObj["puhelinnumero"].toString();
         tilinro = jsonObj["idTilinumero"].toString();
-        saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0); //ei näy oikein
-
+        saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0);
         loggedInHandler(naytaEtusivu);
-
     } else if (resource == "tili/saldo/" + tilinro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonObject jsonObj = jsonDoc.object();
         saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0);
-
         loggedInHandler(naytaEtusivu);
-
     } else if (resource == "tilitapahtuma/tilinumero/" + tilinro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonArray json_array = jsonDoc.array();
@@ -563,10 +578,8 @@ void MainWindow::processData(QString resource, QByteArray data)
         for(int row = 0;row<json_array.size();row++){
             QJsonValue value = json_array.at(row);
             QJsonObject jsonObj = value.toObject();
-
             QString date = jsonObj["dateTime"].toString();
             date.replace("-","/").replace("T"," ").chop(5);
-
             QStandardItem *Aikaleima = new QStandardItem(date);
             tilitapahtumaModel->setItem(row, 0, Aikaleima);
             QStandardItem *Summa = new QStandardItem(QString::number(jsonObj["summa"].toDouble()));
@@ -578,8 +591,6 @@ void MainWindow::processData(QString resource, QByteArray data)
         loggedInHandler(naytaTilitapahtumat);
     }
 }
-
-
 
 
 

@@ -52,11 +52,14 @@ public:
         kirjauduUlos,
         muuSumma,
         summaClicked,
+        pinClicked,
+        uusiPin,
+        uudelleenPin,
+
     };
 
     enum pages{
         tervetuloaPage,
-        kirjauduPage,
         mainPage,
         nostoPage,
         tiedotPage,
@@ -67,7 +70,7 @@ public:
     };
 
 private slots:
-    void processData(QString, QByteArray);
+    void incomingDataHandler(QString, QByteArray);
     void on_syotaPin_clicked();
     void on_tilitapahtumat_clicked();
     void on_nosto_clicked();
@@ -84,7 +87,6 @@ private slots:
 
     void on_naytaTiedot_clicked();
     void numpadEnter_clicked();
-    void on_showNumpad_clicked();
     void on_syotaTilinumero_clicked();
 
     void kylla_clicked();
@@ -93,12 +95,13 @@ private slots:
 
     void on_etusivu_clicked();
 
+    void on_vaihdaSalasana_clicked();
+
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
     void requestGet(QString, QByteArray);
     void requestPut(QString, QByteArray, QJsonObject);
-    void login();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -125,6 +128,8 @@ private:
     QString summa;
     QVector<QString> lukitutKortit;
 
+    QString uusiPIN;
+
     void loginHandler();
     void kirjautumisHandler(events);
     void loggedInHandler(events);
@@ -135,6 +140,6 @@ private:
     void tilinumeroHandler();
     bool korttiOlemassaCheck();
     bool lukitutKortitCheck();
-
+    void pinVaihtoHandler(events);
 };
 #endif // MAINWINDOW_H

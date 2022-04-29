@@ -67,4 +67,15 @@ function(request, response) {
   });
 });
 
+router.put('/pin/:id', 
+function(request, response) {
+  kortti.updatePin(request.params.id, request.body, function(err, dbResult) {
+    if (err) {
+      response.json(err);
+    } else {
+      response.json(dbResult);
+    }
+  });
+});
+
 module.exports = router;
