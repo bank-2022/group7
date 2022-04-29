@@ -135,6 +135,7 @@ void MainWindow::kirjautumisHandler(events e)
             kirjautumisHandler(korttiLukittu);
         } else if(lukitutKortitCheck() == false){
             event = korttiSyotetty;
+            objNumPad->setWindowTitle("Syötä PIN");
             objNumPad->show();
             objNumPad->stringSizeLimiter(true, 4);
             objNumPad->censorInput(true);
@@ -208,18 +209,21 @@ void MainWindow::loggedInHandler(events e)
         emit requestGet(resource, webToken);
     } else if (e == naytaEtusivu){
         ui->saldoLCD->setText(saldo);
+        objNumPad->close();
         pageHandler(mainPage, true, false, "Terve, " + nimi);
     } else if (e == nosto){
         toimenpide = nosta;
         ui->nostoPageStackedWidget->setVisible(false);
         ui->nostoLabel->clear();
         summa.clear();
+        objNumPad->close();
         pageHandler(nostoPage, true, true, "Nosto");
     } else if (e == talletus){
         toimenpide = talleta;
         ui->talletusPageStackedWidget->setVisible(false);
         ui->talletusLabel->clear();
         summa.clear();
+        objNumPad->close();
         pageHandler(talletusPage, true, true, "Talletus");
     } else if (e == tilisiirto){
         toimenpide = siirra;
@@ -227,18 +231,21 @@ void MainWindow::loggedInHandler(events e)
         ui->siirtoLabel->clear();
         summa.clear();
         rcvTilinro.clear();
+        objNumPad->close();
         pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
     } else if (e == haeTilitapahtumat){
         QString resource = "tilitapahtuma/tilinumero/" + tilinro;
         emit requestGet(resource, webToken);
     } else if (e == naytaTilitapahtumat){
+        objNumPad->close();
         pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
     } else if (e == kayttajatiedot){
-        pageHandler(tiedotPage, true, false, "Tietosi");
         ui->nimiLabel->setText(nimi);
         ui->osoiteLabel->setText(osoite);
         ui->puhnroLabel->setText(puhnro);
         ui->tilinroLabel->setText(tilinro);
+        objNumPad->close();
+        pageHandler(tiedotPage, true, false, "Tietosi");
     }
 }
 
@@ -345,6 +352,15 @@ void MainWindow::on_summa500_clicked()
 void MainWindow::on_summaMuu_clicked()
 {
     event = muuSumma;
+
+    ui->nostoLabel->clear();
+    ui->nostoPageStackedWidget->setVisible(false);
+    ui->talletusLabel->clear();
+    ui->talletusPageStackedWidget->setVisible(false);
+    ui->siirtoLabel->clear();
+    ui->siirtoPageStackedWidget->setVisible(false);
+
+    objNumPad->setWindowTitle("Syötä summa");
     objNumPad->stringSizeLimiter(false, 0);
     objNumPad->censorInput(false);
     objNumPad->show();
@@ -353,6 +369,7 @@ void MainWindow::on_summaMuu_clicked()
 void MainWindow::on_syotaTilinumero_clicked()
 {
     event = tilinumero;
+    objNumPad->setWindowTitle("Syötä tilinumero");
     objNumPad->stringSizeLimiter(false, 0);
     objNumPad->censorInput(false);
     objNumPad->show();
@@ -371,7 +388,7 @@ void MainWindow::korttiOlemassaCheck()
     kortinnro = oRfid->returnId();
     kortinnro.remove(0,3).chop(3);
 
-    //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+    kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
 
     QString resource = "korttiCheck/" + kortinnro;
     emit requestGet(resource, webToken);
@@ -399,8 +416,10 @@ void MainWindow::on_vaihdaSalasana_clicked()
 void MainWindow::pinVaihtoHandler(events e)
 {
     if (e == pinClicked){
-        objNumPad->setWindowTitle("Syötä PIN");
         event = pinClicked;
+        objNumPad->setWindowTitle("Syötä PIN");
+        objNumPad->stringSizeLimiter(true, 4);
+        objNumPad->censorInput(true);
         objNumPad->show();
     } else if (e == pinSyotetty){
         event = pinSyotetty;
@@ -455,6 +474,7 @@ void MainWindow::summaButtonsHandler()
 
 void MainWindow::NostaTalletaSiirra_clicked()
 {
+    objNumPad->close();
     if(toimenpide == nosta){
         ui->nostoPageStackedWidget->setCurrentIndex(1);
         ui->nostoLabel->setText("Haluatko varmasti nostaa <b>" + summa + "</b> rahaa?");
@@ -530,10 +550,7 @@ void MainWindow::incomingDataHandler(QString resource, QByteArray data)
     } else if (resource == "korttiCheck/" + kortinnro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonObject jsonObj = jsonDoc.object();
-
         QString korttiValidointi = jsonObj["idKortti"].toString();
-
-
         if(kortinnro == korttiValidointi){
             kirjautumisHandler(korttiValidoitu);
         }
