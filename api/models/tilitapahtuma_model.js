@@ -5,7 +5,7 @@ const tilitapahtuma = {
     return db.query("select * from tilitapahtuma where idTilitapahtuma=?", [id], callback);
   },
   getByTilinumero: function(idTilinumero, callback) {
-    return db.query('select * from bankautomat.tilitapahtuma where idTilinumero = ? order by dateTime desc', [idTilinumero], callback);
+    return db.query('select date_format(tilitapahtuma.dateTime, "%d.%m.%Y  %H:%i:%s") as "aikaleima",summa,tilitapahtuma from bankautomat.tilitapahtuma where idTilinumero = ? order by dateTime desc', [idTilinumero], callback);
   },
   getAll: function(callback) {
     return db.query('select * from tilitapahtuma', callback);
