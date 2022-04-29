@@ -42,11 +42,7 @@ MainWindow::MainWindow(QWidget *parent)
     hView = ui->tilitapahtumaView->horizontalHeader();
     hView->setSectionResizeMode(QHeaderView::ResizeToContents);
 
-    ui->summatWidget->setVisible(false);
     ui->valikkoWidget->setVisible(false);
-    ui->nostoPageStackedWidget->setVisible(false);
-    ui->talletusPageStackedWidget->setVisible(false);
-    ui->siirtoPageStackedWidget->setVisible(false);
 
     connect(this, &MainWindow::requestLogin,
             objRestApi, &Rest_api::sendPost);
@@ -72,32 +68,11 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ajastin, &QTimer::timeout,
             this, &MainWindow::on_kirjauduUlos_clicked);
 
-    connect(ui->kyllaNostaButton, &QAbstractButton::clicked,
+    connect(ui->kyllaButton, &QAbstractButton::clicked,
             this, &MainWindow::kylla_clicked);
 
-    connect(ui->kyllaTalletaButton, &QAbstractButton::clicked,
-            this, &MainWindow::kylla_clicked);
-
-    connect(ui->kyllaSiirraButton, &QAbstractButton::clicked,
-            this, &MainWindow::kylla_clicked);
-
-    connect(ui->eiNostaButton, &QAbstractButton::clicked,
+    connect(ui->eiButton, &QAbstractButton::clicked,
             this, &MainWindow::ei_clicked);
-
-    connect(ui->eiTalletaButton, &QAbstractButton::clicked,
-            this, &MainWindow::ei_clicked);
-
-    connect(ui->eiSiirraButton, &QAbstractButton::clicked,
-            this, &MainWindow::ei_clicked);
-
-    connect(ui->nostaButton, &QAbstractButton::clicked,
-            this, &MainWindow::NostaTalletaSiirra_clicked);
-
-    connect(ui->talletaButton, &QAbstractButton::clicked,
-            this, &MainWindow::NostaTalletaSiirra_clicked);
-
-    connect(ui->siirraButton, &QAbstractButton::clicked,
-            this, &MainWindow::NostaTalletaSiirra_clicked);
 
     kirjautunutState = false;
 }
@@ -141,9 +116,9 @@ void MainWindow::kirjautumisHandler(events e)
         }
     } else if (e == korttiInvalidoitu){
         ajastin->start(5000);
-        pageHandler(vikatilaPage,false,false,"");
+        pageHandler(vikatilaPage, false, "");
         ui->vikatilaLabel->setText("Korttia ei tunnistettu!");
-    }else if (e == pinSyotetty){
+    } else if (e == pinSyotetty){
         QString pin = objNumPad->returnNum();
         QJsonObject jsonObj;
         jsonObj.insert("idKortti", kortinnro);
@@ -168,11 +143,11 @@ void MainWindow::kirjautumisHandler(events e)
         if(this->lukitutKortitCheck()==false){
             lukitutKortit.append(kortinnro);
         }
-        pageHandler(vikatilaPage,false,false,"");
+        pageHandler(vikatilaPage, false, "");
         ui->vikatilaLabel->setText("Pin väärin. Kortti lukittu!");
 
     } else if (e == kirjauduUlos){
-        pageHandler(tervetuloaPage, false, false, " Tervetuloa!");
+        pageHandler(tervetuloaPage, false, " Tervetuloa!");
         kortinnro.clear();
         webToken.clear();
         ajastin->stop();
@@ -206,50 +181,49 @@ void MainWindow::loggedInHandler(events e)
     } else if (e == naytaEtusivu){
         ui->saldoLCD->setText(saldo);
         objNumPad->close();
-        pageHandler(mainPage, true, false, "Terve, " + nimi);
+        pageHandler(mainPage, true, "Terve, " + nimi);
     } else if (e == nosto){
         toimenpide = nosta;
-        ui->nostoPageStackedWidget->setVisible(false);
-        ui->nostoLabel->clear();
+        ui->vahvistusWidget->hide();
+        ui->rahaliikenneLabel->clear();
         summa.clear();
         objNumPad->close();
-        pageHandler(nostoPage, true, true, "Nosto");
+        pageHandler(rahaliikennePage, true, "Nosto");
     } else if (e == talletus){
         toimenpide = talleta;
-        ui->talletusPageStackedWidget->setVisible(false);
-        ui->talletusLabel->clear();
+        ui->vahvistusWidget->hide();
+        ui->rahaliikenneLabel->clear();
         summa.clear();
         objNumPad->close();
-        pageHandler(talletusPage, true, true, "Talletus");
+        pageHandler(rahaliikennePage, true, "Talletus");
     } else if (e == tilisiirto){
         toimenpide = siirra;
-        ui->siirtoPageStackedWidget->setVisible(false);
-        ui->siirtoLabel->clear();
+        ui->vahvistusWidget->hide();
+        ui->rahaliikenneLabel->clear();
         summa.clear();
         rcvTilinro.clear();
         objNumPad->close();
-        pageHandler(tilisiirtoPage, true, true, "Tilisiirto");
+        pageHandler(rahaliikennePage, true, "Tilisiirto");
     } else if (e == haeTilitapahtumat){
         QString resource = "tilitapahtuma/tilinumero/" + tilinro;
         emit requestGet(resource, webToken);
     } else if (e == naytaTilitapahtumat){
         objNumPad->close();
-        pageHandler(tilitapahtumaPage, true, false, "Tilitapahtumat");
+        pageHandler(tilitapahtumaPage, true, "Tilitapahtumat");
     } else if (e == kayttajatiedot){
         ui->nimiLabel->setText(nimi);
         ui->osoiteLabel->setText(osoite);
         ui->puhnroLabel->setText(puhnro);
         ui->tilinroLabel->setText(tilinro);
         objNumPad->close();
-        pageHandler(tiedotPage, true, false, "Tietosi");
+        pageHandler(tiedotPage, true, "Tietosi");
     }
 }
 
-void MainWindow::pageHandler(pages sivu, bool valikko, bool summat, QString teksti)
+void MainWindow::pageHandler(pages sivu, bool valikko, QString teksti)
 {
     ui->stackedWidget->setCurrentIndex(sivu);
     ui->valikkoWidget->setVisible(valikko);
-    ui->summatWidget->setVisible(summat);
     ui->paaOtsikkoLabel->setText(teksti);
 }
 
@@ -265,7 +239,7 @@ void MainWindow::numpadEnter_clicked()
     } else if (event == muuSumma){
         summaButtonsHandler();
     } else if (event == tilinumero){
-        tilinumeroHandler();
+        summaButtonsHandler();
     } else if (event == pinClicked){
         pinVaihtoHandler(pinSyotetty);
     } else if (event == uusiPin){
@@ -348,35 +322,12 @@ void MainWindow::on_summa500_clicked()
 void MainWindow::on_summaMuu_clicked()
 {
     event = muuSumma;
-
-    ui->nostoLabel->clear();
-    ui->nostoPageStackedWidget->setVisible(false);
-    ui->talletusLabel->clear();
-    ui->talletusPageStackedWidget->setVisible(false);
-    ui->siirtoLabel->clear();
-    ui->siirtoPageStackedWidget->setVisible(false);
-
+    ui->rahaliikenneLabel->clear();
+    ui->vahvistusWidget->hide();
     objNumPad->setWindowTitle("Syötä summa");
     objNumPad->stringSizeLimiter(false, 0);
     objNumPad->censorInput(false);
     objNumPad->show();
-}
-
-void MainWindow::on_syotaTilinumero_clicked()
-{
-    event = tilinumero;
-    objNumPad->setWindowTitle("Syötä tilinumero");
-    objNumPad->stringSizeLimiter(false, 0);
-    objNumPad->censorInput(false);
-    objNumPad->show();
-}
-
-void MainWindow::tilinumeroHandler()
-{
-    rcvTilinro = objNumPad->returnNum();
-    objNumPad->close();
-    ui->siirtoLabel->setText("Tilinumero syötetty");
-    ui->siirtoPageStackedWidget->setCurrentIndex(0);
 }
 
 void MainWindow::korttiOlemassaCheck()
@@ -451,49 +402,42 @@ void MainWindow::summaButtonsHandler()
         summa = objNumPad->returnNum();
         qDebug()<<summa;
     }
-    objNumPad->close();
-
     if(toimenpide == nosta){
-        ui->nostoLabel->setText("Summa <b>" + summa + "</b> syötetty");
-        ui->nostoPageStackedWidget->setVisible(true);
-        ui->nostoPageStackedWidget->setCurrentIndex(0);
+        objNumPad->close();
+        ui->vahvistusWidget->show();
+        ui->rahaliikenneLabel->setText("Haluatko varmasti nostaa <b>" + summa + "</b> rahaa?");
     } else if(toimenpide == talleta){
-        ui->talletusLabel->setText("Summa <b>" + summa + "</b> syötetty");
-        ui->talletusPageStackedWidget->setVisible(true);
-        ui->talletusPageStackedWidget->setCurrentIndex(0);
+        objNumPad->close();
+        ui->vahvistusWidget->show();
+        ui->rahaliikenneLabel->setText("Haluatko varmasti tallettaa <b>" + summa + "</b> rahaa?");
+    } else if(event == tilinumero){
+        rcvTilinro = objNumPad->returnNum();
+        objNumPad->close();
+        qDebug()<<rcvTilinro;
+        ui->vahvistusWidget->show();
+        ui->rahaliikenneLabel->setText("Haluatko varmasti siirtää <b>" + summa + "</b> rahaa tilille <b>" + rcvTilinro + "</b> ?");
     } else if(toimenpide == siirra){
-        ui->siirtoLabel->setText("Summa <b>" + summa + "</b> syötetty <br> Syötä tilinumero");
-        ui->siirtoPageStackedWidget->setVisible(true);
-        ui->siirtoPageStackedWidget->setCurrentIndex(2);
-    }
-}
-
-void MainWindow::NostaTalletaSiirra_clicked()
-{
-    objNumPad->close();
-    if(toimenpide == nosta){
-        ui->nostoPageStackedWidget->setCurrentIndex(1);
-        ui->nostoLabel->setText("Haluatko varmasti nostaa <b>" + summa + "</b> rahaa?");
-    } else if(toimenpide == talleta){
-        ui->talletusPageStackedWidget->setCurrentIndex(1);
-        ui->talletusLabel->setText("Haluatko varmasti tallettaa <b>" + summa + "</b> rahaa?");
-    } else if(toimenpide == siirra){
-        ui->siirtoPageStackedWidget->setCurrentIndex(1);
-        ui->siirtoLabel->setText("Haluatko varmasti siirtää <b>" + summa + "</b> rahaa tilille <b>" + rcvTilinro + "</b> ?");
+        event = tilinumero;
+        ui->rahaliikenneLabel->clear();
+        ui->vahvistusWidget->hide();
+        objNumPad->setWindowTitle("Syötä tilinumero");
+        objNumPad->stringSizeLimiter(false, 0);
+        objNumPad->censorInput(false);
+        objNumPad->show();
     }
 }
 
 void MainWindow::kylla_clicked()
 {
     if(toimenpide == nosta){
-        ui->nostoLabel->setText("Nosto onnistui!");
-        ui->nostoPageStackedWidget->setVisible(false);
+        ui->rahaliikenneLabel->setText("Nosto onnistui!");
+        ui->vahvistusWidget->hide();
     } else if(toimenpide == talleta){
-        ui->talletusLabel->setText("Talletus onnistui!");
-        ui->talletusPageStackedWidget->setVisible(false);
+        ui->rahaliikenneLabel->setText("Talletus onnistui!");
+        ui->vahvistusWidget->hide();
     } else if(toimenpide == siirra){
-        ui->siirtoLabel->setText("Tilisiirto onnistui!");
-        ui->siirtoPageStackedWidget->setVisible(false);
+        ui->rahaliikenneLabel->setText("Tilisiirto onnistui!");
+        ui->vahvistusWidget->hide();
     }
 
     rahaliikenneHandler();

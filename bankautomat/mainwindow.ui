@@ -24,7 +24,7 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>6</number>
+     <number>2</number>
     </property>
     <widget class="QWidget" name="tervetuloaPage">
      <widget class="QPushButton" name="syotaPin">
@@ -91,75 +91,112 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="nostoPage">
-     <widget class="QStackedWidget" name="nostoPageStackedWidget">
+    <widget class="QWidget" name="rahaliikennePage">
+     <widget class="QLabel" name="rahaliikenneLabel">
       <property name="geometry">
        <rect>
-        <x>210</x>
-        <y>170</y>
-        <width>221</width>
-        <height>111</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>0</number>
-      </property>
-      <widget class="QWidget" name="nostoOkPage">
-       <widget class="QPushButton" name="nostaButton">
-        <property name="geometry">
-         <rect>
-          <x>60</x>
-          <y>40</y>
-          <width>111</width>
-          <height>31</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Nosta</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="nostoVarmistusPage">
-       <widget class="QPushButton" name="kyllaNostaButton">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>50</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Kyllä</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="eiNostaButton">
-        <property name="geometry">
-         <rect>
-          <x>120</x>
-          <y>50</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Ei</string>
-        </property>
-       </widget>
-      </widget>
-     </widget>
-     <widget class="QLabel" name="nostoLabel">
-      <property name="geometry">
-       <rect>
-        <x>230</x>
+        <x>220</x>
         <y>130</y>
-        <width>211</width>
+        <width>271</width>
         <height>31</height>
        </rect>
       </property>
       <property name="text">
        <string/>
       </property>
+     </widget>
+     <widget class="QWidget" name="summatWidget" native="true">
+      <property name="enabled">
+       <bool>true</bool>
+      </property>
+      <property name="geometry">
+       <rect>
+        <x>150</x>
+        <y>290</y>
+        <width>371</width>
+        <height>141</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout">
+       <item row="0" column="0">
+        <widget class="QPushButton" name="summa10">
+         <property name="text">
+          <string>10</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="summa20">
+         <property name="text">
+          <string>20</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="summa50">
+         <property name="text">
+          <string>50</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="summa100">
+         <property name="text">
+          <string>100</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="summa500">
+         <property name="text">
+          <string>500</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="summaMuu">
+         <property name="text">
+          <string>muu</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+     <widget class="QWidget" name="vahvistusWidget" native="true">
+      <property name="geometry">
+       <rect>
+        <x>240</x>
+        <y>180</y>
+        <width>181</width>
+        <height>31</height>
+       </rect>
+      </property>
+      <widget class="QPushButton" name="kyllaButton">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>10</y>
+         <width>80</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Kyllä</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="eiButton">
+       <property name="geometry">
+        <rect>
+         <x>90</x>
+         <y>10</y>
+         <width>80</width>
+         <height>21</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Ei</string>
+       </property>
+      </widget>
      </widget>
     </widget>
     <widget class="QWidget" name="naytaTiedotPage">
@@ -270,77 +307,6 @@
       </property>
      </widget>
     </widget>
-    <widget class="QWidget" name="talletusPage">
-     <widget class="QStackedWidget" name="talletusPageStackedWidget">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>170</y>
-        <width>201</width>
-        <height>111</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <widget class="QWidget" name="talletusOkPage">
-       <widget class="QPushButton" name="talletaButton">
-        <property name="geometry">
-         <rect>
-          <x>50</x>
-          <y>40</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Talleta</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="talletusVarmistusPage">
-       <widget class="QPushButton" name="kyllaTalletaButton">
-        <property name="geometry">
-         <rect>
-          <x>20</x>
-          <y>40</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Kyllä</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="eiTalletaButton">
-        <property name="geometry">
-         <rect>
-          <x>110</x>
-          <y>40</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Ei</string>
-        </property>
-       </widget>
-      </widget>
-     </widget>
-     <widget class="QLabel" name="talletusLabel">
-      <property name="geometry">
-       <rect>
-        <x>220</x>
-        <y>120</y>
-        <width>291</width>
-        <height>20</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-     </widget>
-    </widget>
     <widget class="QWidget" name="tilitapahtumaPage">
      <widget class="QTableView" name="tilitapahtumaView">
       <property name="geometry">
@@ -350,92 +316,6 @@
         <width>461</width>
         <height>221</height>
        </rect>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="tilisiirtoPage">
-     <widget class="QStackedWidget" name="siirtoPageStackedWidget">
-      <property name="geometry">
-       <rect>
-        <x>260</x>
-        <y>190</y>
-        <width>181</width>
-        <height>91</height>
-       </rect>
-      </property>
-      <property name="currentIndex">
-       <number>1</number>
-      </property>
-      <widget class="QWidget" name="siirtoOkPage">
-       <widget class="QPushButton" name="siirraButton">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>40</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Siirrä</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="siirtoVarmistusPage">
-       <widget class="QPushButton" name="eiSiirraButton">
-        <property name="geometry">
-         <rect>
-          <x>100</x>
-          <y>40</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Ei</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="kyllaSiirraButton">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>40</y>
-          <width>80</width>
-          <height>21</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Kyllä</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QWidget" name="siirtoTilinumeroPage">
-       <widget class="QPushButton" name="syotaTilinumero">
-        <property name="geometry">
-         <rect>
-          <x>40</x>
-          <y>30</y>
-          <width>111</width>
-          <height>26</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Syötä tilinumero</string>
-        </property>
-       </widget>
-      </widget>
-     </widget>
-     <widget class="QLabel" name="siirtoLabel">
-      <property name="geometry">
-       <rect>
-        <x>250</x>
-        <y>130</y>
-        <width>211</width>
-        <height>81</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string/>
       </property>
      </widget>
     </widget>
@@ -454,63 +334,6 @@
       </property>
      </widget>
     </widget>
-   </widget>
-   <widget class="QWidget" name="summatWidget" native="true">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>460</y>
-      <width>371</width>
-      <height>141</height>
-     </rect>
-    </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QPushButton" name="summa10">
-       <property name="text">
-        <string>10</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="summa20">
-       <property name="text">
-        <string>20</string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="2">
-      <widget class="QPushButton" name="summa50">
-       <property name="text">
-        <string>50</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="0">
-      <widget class="QPushButton" name="summa100">
-       <property name="text">
-        <string>100</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QPushButton" name="summa500">
-       <property name="text">
-        <string>500</string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="2">
-      <widget class="QPushButton" name="summaMuu">
-       <property name="text">
-        <string>muu</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </widget>
    <widget class="QWidget" name="valikkoWidget" native="true">
     <property name="geometry">
