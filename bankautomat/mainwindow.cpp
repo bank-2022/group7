@@ -128,9 +128,6 @@ void MainWindow::kirjautumisHandler(events e)
         korttiOlemassaCheck();
     }
     else if (e == korttiValidoitu){
-        korttiValidointi = true;
-        kirjautunutState = true;
-
         if(lukitutKortitCheck() == true){
             kirjautumisHandler(korttiLukittu);
         } else if(lukitutKortitCheck() == false){
@@ -388,7 +385,7 @@ void MainWindow::korttiOlemassaCheck()
     kortinnro = oRfid->returnId();
     kortinnro.remove(0,3).chop(3);
 
-    kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+    //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
 
     QString resource = "korttiCheck/" + kortinnro;
     emit requestGet(resource, webToken);
