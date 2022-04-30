@@ -14,14 +14,18 @@ MainWindow::MainWindow(QWidget *parent)
     oRfid = new Rfid_dll;
     ajastin = new QTimer;
 
-    QFont f( "Comic Sans MS", 25, QFont::Bold);
-    QFont f2( "Comic Sans MS", 18, QFont::Bold);
+    QFont f("Comic Sans MS", 25, QFont::Bold);
+    QFont f2("Comic Sans MS", 18, QFont::Bold);
+    QFont f3("Arial", 15);
     ui->tervetuloaLabel->setFont(f);
     ui->tervetuloaLabel->setAlignment(Qt::AlignCenter);
     ui->tervetuloaLabel->setText(" Tervetuloa! <br> Syötä kortti.");
     ui->paaOtsikkoLabel->setFont(f);
     ui->paaOtsikkoLabel->clear();
     ui->vikatilaLabel->setFont(f);
+
+    ui->rahaliikenneLabel->setAlignment(Qt::AlignCenter);
+    ui->rahaliikenneLabel->setFont(f3);
 
     ui->saldoLabel->setStyleSheet("font: 18pt;");
     ui->saldoLCD->setStyleSheet("font: 18pt;");
@@ -179,21 +183,21 @@ void MainWindow::loggedInHandler(events e)
     } else if (e == nosto){
         toimenpide = nosta;
         ui->vahvistusWidget->hide();
-        ui->rahaliikenneLabel->clear();
+        ui->rahaliikenneLabel->setText("Syötä summa");
         summa.clear();
         objNumPad->close();
         pageHandler(rahaliikennePage, true, "Nosto");
     } else if (e == talletus){
         toimenpide = talleta;
         ui->vahvistusWidget->hide();
-        ui->rahaliikenneLabel->clear();
+        ui->rahaliikenneLabel->setText("Syötä summa");
         summa.clear();
         objNumPad->close();
         pageHandler(rahaliikennePage, true, "Talletus");
     } else if (e == tilisiirto){
         toimenpide = siirra;
         ui->vahvistusWidget->hide();
-        ui->rahaliikenneLabel->clear();
+        ui->rahaliikenneLabel->setText("Syötä summa");
         summa.clear();
         rcvTilinro.clear();
         objNumPad->close();
@@ -428,15 +432,15 @@ void MainWindow::on_kyllaButton_clicked()
 {
     if(toimenpide == nosta){
         ui->rahaliikenneLabel->setText("Nosto onnistui!");
-        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->clear(); } );
+        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->setText("Syötä summa"); } );
         ui->vahvistusWidget->hide();
     } else if(toimenpide == talleta){
         ui->rahaliikenneLabel->setText("Talletus onnistui!");
-        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->clear(); } );
+        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->setText("Syötä summa"); } );
         ui->vahvistusWidget->hide();
     } else if(toimenpide == siirra){
         ui->rahaliikenneLabel->setText("Tilisiirto onnistui!");
-        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->clear(); } );
+        QTimer::singleShot(3000, this, [this]() { ui->rahaliikenneLabel->setText("Syötä summa"); } );
         ui->vahvistusWidget->hide();
     }
 
@@ -531,6 +535,11 @@ void MainWindow::incomingDataHandler(QString resource, QByteArray data)
             tilitapahtumaModel->setItem(row, 1, Summa);
             QStandardItem *Tyyppi = new QStandardItem(jsonObj["tilitapahtuma"].toString());
             tilitapahtumaModel->setItem(row, 2, Tyyppi);
+
+            Aikaleima->setTextAlignment(Qt::AlignCenter);
+            Summa->setTextAlignment(Qt::AlignCenter);
+            Tyyppi->setTextAlignment(Qt::AlignCenter);
+
         }
         ui->tilitapahtumaView->setModel(tilitapahtumaModel);
         loggedInHandler(naytaTilitapahtumat);
