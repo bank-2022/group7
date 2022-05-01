@@ -34,6 +34,8 @@ public:
 
     enum events{
         korttiSyotetty,
+        korttiValidoitu,
+        korttiInvalidoitu,
         pinSyotetty,
         pinVaarin,
         pinOikein,
@@ -50,22 +52,25 @@ public:
         kirjauduUlos,
         muuSumma,
         summaClicked,
+        pinClicked,
+        uusiPin,
+        uudelleenPin,
+
     };
 
     enum pages{
         tervetuloaPage,
         mainPage,
-        nostoPage,
-        tiedotPage,
-        talletusPage,
-        tilitapahtumaPage,
-        tilisiirtoPage,
-        pinLukittuPage,
+        rahaliikennePage,
+        tiedotPage,       
+        tilitapahtumaPage,       
+        vikatilaPage,
     };
 
 private slots:
     void incomingDataHandler(QString, QByteArray);
     void on_syotaPin_clicked();
+    void on_etusivu_clicked();
     void on_tilitapahtumat_clicked();
     void on_nosto_clicked();
     void on_talletus_clicked();
@@ -81,20 +86,17 @@ private slots:
 
     void on_naytaTiedot_clicked();
     void numpadEnter_clicked();
-    void on_syotaTilinumero_clicked();
 
-    void kylla_clicked();
-    void ei_clicked();
-    void NostaTalletaSiirra_clicked();
+    void on_kyllaButton_clicked();
+    void on_eiButton_clicked();
 
-    void on_etusivu_clicked();
+    void on_vaihdaPin_clicked();
 
 signals:
     void requestLogin(QString, QByteArray, QJsonObject);
     void requestPost(QString, QByteArray, QJsonObject);
     void requestGet(QString, QByteArray);
     void requestPut(QString, QByteArray, QJsonObject);
-    void login();
 
 protected:
     void closeEvent(QCloseEvent *event) override;
@@ -112,6 +114,8 @@ private:
     QString nimi, osoite, puhnro, tilinro, saldo;
     QString rcvTilinro;
     int loginAttempts;
+    bool kirjautunutState;
+    bool korttiValidointi;
 
     rahaliikenne toimenpide;
     events event;
@@ -119,14 +123,18 @@ private:
     QString summa;
     QVector<QString> lukitutKortit;
 
+    QString uusiPIN;
+
     void loginHandler();
     void kirjautumisHandler(events);
     void loggedInHandler(events);
-    void pageHandler(pages, bool, bool, QString);
+    void pageHandler(pages, bool, QString);
     void summaHandler(QString, rahaliikenne);
     void rahaliikenneHandler();
     void summaButtonsHandler();
     void tilinumeroHandler();
+    void korttiOlemassaCheck();
     bool lukitutKortitCheck();
+    void pinVaihtoHandler(events);
 };
 #endif // MAINWINDOW_H
