@@ -135,6 +135,7 @@ private:
     void tilinumeroHandler();
     void korttiOlemassaCheck();
     bool lukitutKortitCheck();
-    void pinVaihtoHandler(events);
+    void pinVaihtoHandler(events);   
+    void tilitapahtumaSuodatus(int);
 };
 #endif // MAINWINDOW_H
