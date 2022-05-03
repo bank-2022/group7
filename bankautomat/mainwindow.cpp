@@ -54,6 +54,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->valikkoWidget->setVisible(false);
 
+
+
     connect(this, &MainWindow::requestLogin,
             objRestApi, &Rest_api::sendPost);
 
@@ -79,10 +81,12 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::on_kirjauduUlos_clicked);
 
     connect(ui->filtteriDropdown, QOverload<int>::of(&QComboBox::activated),
-            [=](int index){tilitapahtumaSuodatus(index);});
+            this, [=](int index){tilitapahtumaSuodatus(index);});
 
 
     kirjautunutState = false;
+
+    qApp->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -103,6 +107,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     objNumPad->close();
     event->accept();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress) {
+            ajastin->start(4000);
+            qDebug()<<"moro";
+        } else {
+            return QObject::eventFilter(obj, event);
+        }
+    return false;
 }
 
 void MainWindow::kirjautumisHandler(events e)
@@ -155,10 +170,11 @@ void MainWindow::kirjautumisHandler(events e)
         ui->vikatilaLabel->setText("Pin väärin. Kortti lukittu!");
 
     } else if (e == kirjauduUlos){
-        pageHandler(tervetuloaPage, false, " Tervetuloa!");
+        pageHandler(tervetuloaPage, false, "");
         kortinnro.clear();
         webToken.clear();
         ajastin->stop();
+        objNumPad->close();
         kirjautunutState = false;
         loginAttempts = 0;
     }
@@ -343,7 +359,7 @@ void MainWindow::korttiOlemassaCheck()
     kortinnro = oRfid->returnId();
     kortinnro.remove(0,3).chop(3);
 
-    //kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
+    kortinnro = "0A005968A0"; //kovakoodaus testaamista varten
 
     QString resource = "korttiCheck/" + kortinnro;
     emit requestGet(resource, webToken);

@@ -100,13 +100,16 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
-
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private:
     Ui::MainWindow *ui;
     numpad_ui *objNumPad;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
     QTimer *ajastin;
+    QTimer *logout;
+
+
 
     QString kortinnro;
     QByteArray webToken;
