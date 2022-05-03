@@ -1,11 +1,19 @@
 const db = require('../database');
-
 const tilitapahtuma = {
   getById(id, callback) {
     return db.query("select * from tilitapahtuma where idTilitapahtuma=?", [id], callback);
   },
   getByTilinumero: function(idTilinumero, callback) {
-    return db.query('select date_format(tilitapahtuma.dateTime, "%d-%m-%Y  %H:%i:%s") as "aikaleima",summa,tilitapahtuma from bankautomat.tilitapahtuma where idTilinumero = ? order by dateTime desc', [idTilinumero], callback);
+    return db.query('select date_format(tilitapahtuma.dateTime, "%d/%m/%Y klo %H:%i:%s") as "aikaleima",summa,tilitapahtuma from bankautomat.tilitapahtuma where idTilinumero = ? order by dateTime desc', [idTilinumero], callback);
+  },
+  getByFiltteriNosto: function(id,callback) {
+    return db.query('select date_format(tilitapahtuma.dateTime, "%d/%m/%Y klo %H:%i:%s") as "aikaleima",summa,tilitapahtuma from bankautomat.tilitapahtuma where idTilinumero = ? and tilitapahtuma like "%Nosto%" order by dateTime desc',[id], callback);
+  },
+  getByFiltteriTalletus: function(id,callback) {
+    return db.query('select date_format(tilitapahtuma.dateTime, "%d/%m/%Y klo %H:%i:%s") as "aikaleima",summa,tilitapahtuma from bankautomat.tilitapahtuma where idTilinumero = ? and tilitapahtuma like "%Talletus%" order by dateTime desc',[id], callback);
+  },
+  getByFiltteriSiirto: function(id,callback) {
+    return db.query('select date_format(tilitapahtuma.dateTime, "%d/%m/%Y klo %H:%i:%s") as "aikaleima",summa,tilitapahtuma from bankautomat.tilitapahtuma where idTilinumero = ? and tilitapahtuma like "%Siirto%" order by dateTime desc',[id], callback);
   },
   getAll: function(callback) {
     return db.query('select * from tilitapahtuma', callback);

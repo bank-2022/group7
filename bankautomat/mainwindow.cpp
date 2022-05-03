@@ -46,7 +46,15 @@ MainWindow::MainWindow(QWidget *parent)
     hView = ui->tilitapahtumaView->horizontalHeader();
     hView->setSectionResizeMode(QHeaderView::ResizeToContents);
 
+    //Tilitapahtumien filtteröinti combobox asetukset
+    ui->filtteriDropdown->addItem("Kaikki");
+    ui->filtteriDropdown->addItem("Nostot");
+    ui->filtteriDropdown->addItem("Talletukset");
+    ui->filtteriDropdown->addItem("Siirrot");
+
     ui->valikkoWidget->setVisible(false);
+
+
 
     connect(this, &MainWindow::requestLogin,
             objRestApi, &Rest_api::sendPost);
@@ -72,7 +80,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ajastin, &QTimer::timeout,
             this, &MainWindow::on_kirjauduUlos_clicked);
 
+    connect(ui->filtteriDropdown, QOverload<int>::of(&QComboBox::activated),
+            this, [=](int index){tilitapahtumaSuodatus(index);});
+
+
     kirjautunutState = false;
+
+    qApp->installEventFilter(this);
 }
 
 MainWindow::~MainWindow()
@@ -93,6 +107,17 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     objNumPad->close();
     event->accept();
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::MouseButtonPress) {
+            ajastin->start(4000);
+            qDebug()<<"moro";
+        } else {
+            return QObject::eventFilter(obj, event);
+        }
+    return false;
 }
 
 void MainWindow::kirjautumisHandler(events e)
@@ -145,10 +170,11 @@ void MainWindow::kirjautumisHandler(events e)
         ui->vikatilaLabel->setText("Pin väärin. Kortti lukittu!");
 
     } else if (e == kirjauduUlos){
-        pageHandler(tervetuloaPage, false, " Tervetuloa!");
+        pageHandler(tervetuloaPage, false, "");
         kortinnro.clear();
         webToken.clear();
         ajastin->stop();
+        objNumPad->close();
         kirjautunutState = false;
         loginAttempts = 0;
     }
@@ -397,6 +423,16 @@ void MainWindow::pinVaihtoHandler(events e)
     }
 }
 
+void MainWindow::tilitapahtumaSuodatus(int i)
+{
+    QString resource;
+    if(i == 0){resource = "tilitapahtuma/tilinumero/" + tilinro;}
+    if(i == 1){resource = "tilitapahtuma/nosto/" + tilinro;}
+    if(i == 2){resource = "tilitapahtuma/talletus/" + tilinro;}
+    if(i == 3){resource = "tilitapahtuma/siirto/" + tilinro;}
+    emit requestGet(resource,webToken);
+}
+
 void MainWindow::summaButtonsHandler()
 {
     if(event == muuSumma){
@@ -516,11 +552,14 @@ void MainWindow::incomingDataHandler(QString resource, QByteArray data)
         QJsonObject jsonObj = jsonDoc.object();
         saldo = QString::number(jsonObj["saldo"].toDouble(), 'f', 0);
         loggedInHandler(naytaEtusivu);
-    } else if (resource == "tilitapahtuma/tilinumero/" + tilinro){
+    } else if (resource == "tilitapahtuma/tilinumero/" + tilinro ||
+               resource == "tilitapahtuma/nosto/" + tilinro ||
+               resource == "tilitapahtuma/talletus/" + tilinro ||
+               resource == "tilitapahtuma/siirto/" + tilinro){
         QJsonDocument jsonDoc = QJsonDocument::fromJson(data);
         QJsonArray json_array = jsonDoc.array();
 
-        QStandardItemModel *tilitapahtumaModel = new QStandardItemModel(10,3);
+        QStandardItemModel *tilitapahtumaModel = new QStandardItemModel(json_array.size(),3);
         tilitapahtumaModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Aika"));
         tilitapahtumaModel->setHeaderData(1, Qt::Horizontal, QObject::tr("Summa"));
         tilitapahtumaModel->setHeaderData(2, Qt::Horizontal, QObject::tr("Tapahtuma"));
@@ -539,7 +578,6 @@ void MainWindow::incomingDataHandler(QString resource, QByteArray data)
             Aikaleima->setTextAlignment(Qt::AlignCenter);
             Summa->setTextAlignment(Qt::AlignCenter);
             Tyyppi->setTextAlignment(Qt::AlignCenter);
-
         }
         ui->tilitapahtumaView->setModel(tilitapahtumaModel);
         loggedInHandler(naytaTilitapahtumat);

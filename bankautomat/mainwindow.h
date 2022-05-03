@@ -100,13 +100,16 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent *event) override;
-
+    bool eventFilter(QObject *obj, QEvent *event) override;
 private:
     Ui::MainWindow *ui;
     numpad_ui *objNumPad;
     Rest_api *objRestApi;
     Rfid_dll *oRfid;
     QTimer *ajastin;
+    QTimer *logout;
+
+
 
     QString kortinnro;
     QByteArray webToken;
@@ -135,6 +138,7 @@ private:
     void tilinumeroHandler();
     void korttiOlemassaCheck();
     bool lukitutKortitCheck();
-    void pinVaihtoHandler(events);
+    void pinVaihtoHandler(events);   
+    void tilitapahtumaSuodatus(int);
 };
 #endif // MAINWINDOW_H

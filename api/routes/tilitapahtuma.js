@@ -33,16 +33,38 @@ router.get('/tilinumero/:id', function(request, response) {
     });       
   }
 });
-router.get('/kortti/:id', function(request, response) {
+
+router.get('/nosto/:id', function(request, response) {
   if (request.params.id) {
-      tilitapahtuma.getByidKortti(request.params.id, function(err, dbResult) {
+      tilitapahtuma.getByFiltteriNosto(request.params.id, function(err, dbResult) {
       if (err) {
           response.json(err);
       } else {
           response.json(dbResult)
       }
-  });       
-}
+  })}
+});
+
+router.get('/talletus/:id', function(request, response) {
+  if (request.params.id) {
+      tilitapahtuma.getByFiltteriTalletus(request.params.id, function(err, dbResult) {
+      if (err) {
+          response.json(err);
+      } else {
+          response.json(dbResult)
+      }
+  })}
+});
+
+router.get('/siirto/:id', function(request, response) {
+  if (request.params.id) {
+      tilitapahtuma.getByFiltteriSiirto(request.params.id, function(err, dbResult) {
+      if (err) {
+          response.json(err);
+      } else {
+          response.json(dbResult)
+      }
+  })}
 });
 
 router.post('/', 
